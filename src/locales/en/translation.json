@@ -1,0 +1,156 @@
+{
+  "common": {
+    "appName": "Charity Management System",
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search",
+    "noData": "No data to display",
+    "somethingWentWrong": "Something went wrong",
+    "somethingWentWrongDescription": "We're sorry for the inconvenience. Please reload the page or try again later.",
+    "reload": "Reload",
+    "retry": "Retry",
+    "logout": "Logout",
+    "profile": "Profile",
+    "lightMode": "Light mode",
+    "darkMode": "Dark mode",
+    "toggleSidebar": "Toggle sidebar",
+    "notifications": "Notifications",
+    "comingSoon": "Coming soon",
+    "comingSoonDescription": "This module is under development and will be available soon.",
+    "rowsPerPage": "Rows per page",
+    "of": "of",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "cases": "Cases",
+    "visits": "Visits",
+    "assistance": "Assistance",
+    "reminders": "Reminders",
+    "donors": "Donors",
+    "donations": "Donations",
+    "expenses": "Expenses",
+    "financial": "Financial",
+    "reports": "Reports",
+    "users": "Users",
+    "settings": "Settings",
+    "auditLog": "Audit Log"
+  },
+  "auth": {
+    "loginTitle": "Sign In",
+    "loginSubtitle": "Enter your credentials to access the system",
+    "email": "Email",
+    "password": "Password",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot password?",
+    "loginButton": "Sign In",
+    "loggingIn": "Signing in...",
+    "forgotPasswordTitle": "Reset Password",
+    "forgotPasswordSubtitle": "Enter your email and we'll send you a password reset link",
+    "sendResetLink": "Send Reset Link",
+    "sendingResetLink": "Sending...",
+    "backToLogin": "Back to sign in",
+    "resetLinkSent": "If that email is registered, a password reset link has been sent.",
+    "noSelfRegistration": "Accounts are created by a system administrator only."
+  },
+  "validation": {
+    "required": "This field is required",
+    "invalidEmail": "Invalid email address",
+    "passwordMinLength": "Password must be at least 6 characters",
+    "minLength3": "Must be at least 3 characters",
+    "maxLength120": "Must not exceed 120 characters",
+    "maxLength2000": "Must not exceed 2000 characters",
+    "invalidNationalId": "National ID must be 14 digits",
+    "invalidPhone": "Invalid phone number (e.g. 01012345678)",
+    "atLeastOneCaseType": "Select at least one type",
+    "invalidNumber": "Please enter a valid number",
+    "minValue0": "Value must not be negative",
+    "minValue1": "Value must be at least 1"
+  },
+  "errors": {
+    "unauthorizedTitle": "Access Denied",
+    "unauthorizedDescription": "You don't have sufficient permissions to view this page.",
+    "notFoundTitle": "Page Not Found",
+    "notFoundDescription": "The page you're looking for doesn't exist or has been moved.",
+    "backToDashboard": "Back to Dashboard"
+  },
+  "confirmDialog": {
+    "defaultConfirm": "Confirm",
+    "defaultCancel": "Cancel"
+  },
+  "settings": {
+    "lookupsTitle": "Lookup Lists",
+    "permissionsTitle": "Role Permissions"
+  },
+  "cases": {
+    "listTitle": "Cases",
+    "listDescription": "Manage beneficiary cases and track their records",
+    "newCase": "New Case",
+    "editCase": "Edit Case",
+    "caseDetails": "Case Details",
+    "reviewOnlyNotice": "As a case reviewer, you can only approve or reject this case without editing its data.",
+    "fields": {
+      "caseNumber": "Case Number",
+      "fullName": "Applicant Name",
+      "nationalId": "National ID",
+      "phone": "Phone",
+      "governorate": "Governorate",
+      "city": "City",
+      "addressDetails": "Address Details",
+      "caseType": "Assistance Type",
+      "familyMembersCount": "Family Members Count",
+      "monthlyIncome": "Monthly Income",
+      "monthlyExpenses": "Monthly Expenses",
+      "status": "Status",
+      "notes": "Notes",
+      "priority": "Priority",
+      "createdAt": "Created At",
+      "createdBy": "Created By",
+      "assignedResearcher": "Assigned Researcher"
+    },
+    "selectGovernorateFirst": "Select a governorate first",
+    "noCitiesForGovernorate": "No cities registered for this governorate",
+    "actions": {
+      "create": "Save Case",
+      "save": "Save Changes",
+      "edit": "Edit",
+      "delete": "Delete",
+      "viewDetails": "View Details",
+      "cancel": "Cancel",
+      "approve": "Approve",
+      "reject": "Reject",
+      "backToList": "Back to Cases"
+    },
+    "filters": {
+      "searchPlaceholder": "Search by name...",
+      "statusFilterLabel": "Filter by status",
+      "allStatuses": "All statuses"
+    },
+    "table": {
+      "familyMembersShort": "Family Members"
+    },
+    "messages": {
+      "createSuccess": "Case created successfully",
+      "updateSuccess": "Changes saved successfully",
+      "deleteConfirmTitle": "Delete Case",
+      "deleteConfirmMessage": "Are you sure you want to delete this case? It can be restored later by a system administrator.",
+      "deleteSuccess": "Case deleted successfully",
+      "deleteError": "Failed to delete the case",
+      "loadError": "Failed to load case data",
+      "saveError": "Failed to save the case, please try again",
+      "notFound": "This case could not be found"
+    },
+    "empty": {
+      "title": "No cases yet",
+      "description": "Start by adding the first beneficiary case",
+      "noResultsTitle": "No matching results",
+      "noResultsDescription": "Try adjusting your search term or status filter"
+    }
+  }
+}

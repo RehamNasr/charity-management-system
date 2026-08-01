@@ -1,0 +1,156 @@
+{
+  "common": {
+    "appName": "نظام إدارة الجمعية الخيرية",
+    "loading": "جارٍ التحميل...",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "confirm": "تأكيد",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "add": "إضافة",
+    "search": "بحث",
+    "noData": "لا توجد بيانات لعرضها",
+    "somethingWentWrong": "حدث خطأ غير متوقع",
+    "somethingWentWrongDescription": "نأسف على هذا الإزعاج. يرجى إعادة تحميل الصفحة أو المحاولة لاحقًا.",
+    "reload": "إعادة تحميل",
+    "retry": "إعادة المحاولة",
+    "logout": "تسجيل الخروج",
+    "profile": "الملف الشخصي",
+    "lightMode": "الوضع الفاتح",
+    "darkMode": "الوضع الداكن",
+    "toggleSidebar": "طي/فتح القائمة الجانبية",
+    "notifications": "الإشعارات",
+    "comingSoon": "قريبًا",
+    "comingSoonDescription": "هذه الوحدة قيد التطوير وستكون متاحة قريبًا.",
+    "rowsPerPage": "عدد الصفوف",
+    "of": "من",
+    "yes": "نعم",
+    "no": "لا"
+  },
+  "nav": {
+    "dashboard": "لوحة التحكم",
+    "cases": "الحالات",
+    "visits": "الزيارات",
+    "assistance": "المساعدات",
+    "reminders": "التذكيرات",
+    "donors": "المتبرعون",
+    "donations": "التبرعات",
+    "expenses": "المصروفات",
+    "financial": "الحسابات المالية",
+    "reports": "التقارير",
+    "users": "المستخدمون",
+    "settings": "الإعدادات",
+    "auditLog": "سجل التدقيق"
+  },
+  "auth": {
+    "loginTitle": "تسجيل الدخول",
+    "loginSubtitle": "أدخل بياناتك للوصول إلى النظام",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "rememberMe": "تذكرني",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "loginButton": "تسجيل الدخول",
+    "loggingIn": "جارٍ تسجيل الدخول...",
+    "forgotPasswordTitle": "استعادة كلمة المرور",
+    "forgotPasswordSubtitle": "أدخل بريدك الإلكتروني وسنرسل لك رابطًا لإعادة تعيين كلمة المرور",
+    "sendResetLink": "إرسال رابط الاستعادة",
+    "sendingResetLink": "جارٍ الإرسال...",
+    "backToLogin": "العودة إلى تسجيل الدخول",
+    "resetLinkSent": "تم إرسال رابط استعادة كلمة المرور إلى بريدك الإلكتروني إن كان مسجلاً لدينا.",
+    "noSelfRegistration": "الحسابات تُنشأ من قبل مسؤول النظام فقط."
+  },
+  "validation": {
+    "required": "هذا الحقل مطلوب",
+    "invalidEmail": "صيغة البريد الإلكتروني غير صحيحة",
+    "passwordMinLength": "يجب أن تتكون كلمة المرور من 6 أحرف على الأقل",
+    "minLength3": "يجب أن يحتوي على 3 أحرف على الأقل",
+    "maxLength120": "لا يجب أن يتجاوز 120 حرفًا",
+    "maxLength2000": "لا يجب أن يتجاوز 2000 حرف",
+    "invalidNationalId": "الرقم القومي يجب أن يتكون من 14 رقمًا",
+    "invalidPhone": "رقم الهاتف غير صحيح (مثال: 01012345678)",
+    "atLeastOneCaseType": "يجب اختيار نوع واحد على الأقل",
+    "invalidNumber": "يجب إدخال رقم صحيح",
+    "minValue0": "يجب ألا تقل القيمة عن صفر",
+    "minValue1": "يجب أن تكون القيمة 1 على الأقل"
+  },
+  "errors": {
+    "unauthorizedTitle": "غير مصرح لك بالوصول",
+    "unauthorizedDescription": "ليس لديك الصلاحية الكافية لعرض هذه الصفحة.",
+    "notFoundTitle": "الصفحة غير موجودة",
+    "notFoundDescription": "الصفحة التي تبحث عنها غير موجودة أو تم نقلها.",
+    "backToDashboard": "العودة إلى لوحة التحكم"
+  },
+  "confirmDialog": {
+    "defaultConfirm": "تأكيد",
+    "defaultCancel": "إلغاء"
+  },
+  "settings": {
+    "lookupsTitle": "القوائم الأساسية",
+    "permissionsTitle": "صلاحيات الأدوار"
+  },
+  "cases": {
+    "listTitle": "الحالات",
+    "listDescription": "إدارة حالات المستفيدين ومتابعة بياناتهم",
+    "newCase": "إضافة حالة",
+    "editCase": "تعديل الحالة",
+    "caseDetails": "بيانات الحالة",
+    "reviewOnlyNotice": "بصفتك مراجع حالات، يمكنك فقط اعتماد أو رفض هذه الحالة دون تعديل بياناتها.",
+    "fields": {
+      "caseNumber": "رقم الحالة",
+      "fullName": "اسم المستفيد",
+      "nationalId": "الرقم القومي",
+      "phone": "رقم الهاتف",
+      "governorate": "المحافظة",
+      "city": "المدينة",
+      "addressDetails": "تفاصيل العنوان",
+      "caseType": "نوع المساعدة",
+      "familyMembersCount": "عدد أفراد الأسرة",
+      "monthlyIncome": "الدخل الشهري",
+      "monthlyExpenses": "المصروفات الشهرية",
+      "status": "الحالة",
+      "notes": "ملاحظات",
+      "priority": "الأولوية",
+      "createdAt": "تاريخ الإنشاء",
+      "createdBy": "أُنشئت بواسطة",
+      "assignedResearcher": "الباحث المسؤول"
+    },
+    "selectGovernorateFirst": "اختر المحافظة أولاً",
+    "noCitiesForGovernorate": "لا توجد مدن مسجلة لهذه المحافظة",
+    "actions": {
+      "create": "حفظ الحالة",
+      "save": "حفظ التعديلات",
+      "edit": "تعديل",
+      "delete": "حذف",
+      "viewDetails": "عرض التفاصيل",
+      "cancel": "إلغاء",
+      "approve": "اعتماد",
+      "reject": "رفض",
+      "backToList": "العودة إلى قائمة الحالات"
+    },
+    "filters": {
+      "searchPlaceholder": "بحث بالاسم...",
+      "statusFilterLabel": "تصفية حسب الحالة",
+      "allStatuses": "كل الحالات"
+    },
+    "table": {
+      "familyMembersShort": "أفراد الأسرة"
+    },
+    "messages": {
+      "createSuccess": "تم إنشاء الحالة بنجاح",
+      "updateSuccess": "تم حفظ التعديلات بنجاح",
+      "deleteConfirmTitle": "حذف الحالة",
+      "deleteConfirmMessage": "هل أنت متأكد من حذف هذه الحالة؟ يمكن استرجاعها لاحقًا من قبل مسؤول النظام.",
+      "deleteSuccess": "تم حذف الحالة بنجاح",
+      "deleteError": "تعذر حذف الحالة",
+      "loadError": "تعذر تحميل بيانات الحالة",
+      "saveError": "تعذر حفظ الحالة، يرجى المحاولة مرة أخرى",
+      "notFound": "لم يتم العثور على هذه الحالة"
+    },
+    "empty": {
+      "title": "لا توجد حالات بعد",
+      "description": "ابدأ بإضافة أول حالة مستفيد لعرضها هنا",
+      "noResultsTitle": "لا توجد نتائج مطابقة",
+      "noResultsDescription": "جرّب تعديل كلمة البحث أو تصفية الحالة"
+    }
+  }
+}

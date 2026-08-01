@@ -1,0 +1,110 @@
+rules_version = '2';
+
+// Foundation-level rules only. Business-module collections (cases, assistance, donors,
+// donations, expenses, transactions, etc. — see docs/ARCHITECTURE.md §6/§8) are added as
+// each module is implemented. Default posture is deny-all; nothing is opened up "just in case".
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function role() {
+      return request.auth.token.role;
+    }
+
+    function hasAnyRole(roles) {
+      return isSignedIn() && role() in roles;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    // Users can always read their own profile (needed by the auth bootstrap flow);
+    // admins can read/manage all user profiles. Role changes happen only through the
+    // setUserRole callable Cloud Function (Admin SDK), never a direct client write —
+    // see docs/ARCHITECTURE.md §8.
+    match /users/{uid} {
+      allow read: if isOwner(uid) || hasAnyRole(['super_admin', 'admin']);
+      allow create, update, delete: if false;
+    }
+
+    // Lookup collections (docs/ARCHITECTURE.md §6.5) — readable by any signed-in user (needed to
+    // populate form dropdowns across roles), editable only by admins. `caseTypes` is included
+    // here (ahead of the rest of §6.5) because the Cases module's "Assistance/Case Type" field is
+    // an FK into it.
+    match /governorates/{id} {
+      allow read: if isSignedIn();
+      allow write: if hasAnyRole(['super_admin', 'admin']);
+    }
+    match /cities/{id} {
+      allow read: if isSignedIn();
+      allow write: if hasAnyRole(['super_admin', 'admin']);
+    }
+    match /caseTypes/{id} {
+      allow read: if isSignedIn();
+      allow write: if hasAnyRole(['super_admin', 'admin']);
+    }
+
+    // Case-number sequence counter (docs/ARCHITECTURE.md §6 — "Firestore counter document, not
+    // client Date.now()"). Read/write is limited to the same roles allowed to create cases, since
+    // it is only ever touched inside the case-creation transaction.
+    match /counters/{counterId} {
+      allow read, write: if hasAnyRole(['super_admin', 'admin', 'social_researcher', 'data_entry']);
+    }
+
+    // Cases (docs/ARCHITECTURE.md §3/§6/§8). `financial_officer` is deliberately excluded from
+    // read for now: the architecture's field-level PII protection for that role depends on the
+    // `cases/{id}/private/pii` subcollection split plus the `rolePermissions` collection (§8),
+    // neither of which exists yet — granting broad read here would leak nationalId/address/income
+    // ahead of that safeguard, so it's deferred rather than half-built.
+    match /cases/{caseId} {
+      allow read: if hasAnyRole([
+        'super_admin', 'admin', 'social_researcher', 'case_reviewer', 'data_entry', 'auditor'
+      ]);
+
+      allow create: if hasAnyRole(['super_admin', 'admin', 'social_researcher', 'data_entry']) &&
+                       request.resource.data.isDeleted == false &&
+                       request.resource.data.createdBy == request.auth.uid;
+
+      // Four disjoint update paths, matching the §3 role matrix and the §5 state machine:
+      //  - super_admin/admin: unrestricted (includes soft delete via isDeleted).
+      //  - social_researcher: only their own assigned case, only while draft/under_research, can
+      //    only move status one step forward along the documented transitions (or leave it
+      //    unchanged), and can never flip isDeleted (§3: "cannot delete cases").
+      //  - data_entry: only their own case, only while draft, status must stay draft
+      //    (§3: "no status transitions"), same isDeleted restriction (§3: "no delete").
+      //  - case_reviewer: cannot edit raw case data, only the pending_review -> approved|rejected
+      //    transition (§3 "approve/reject status transitions... cannot edit raw case data").
+      allow update: if hasAnyRole(['super_admin', 'admin']) ||
+        (hasAnyRole(['social_researcher']) &&
+         resource.data.assignedResearcherId == request.auth.uid &&
+         resource.data.status in ['draft', 'under_research'] &&
+         request.resource.data.isDeleted == resource.data.isDeleted &&
+         (request.resource.data.status == resource.data.status ||
+          (resource.data.status == 'draft' && request.resource.data.status == 'under_research') ||
+          (resource.data.status == 'under_research' &&
+           request.resource.data.status == 'pending_review'))) ||
+        (hasAnyRole(['data_entry']) &&
+         resource.data.createdBy == request.auth.uid &&
+         resource.data.status == 'draft' &&
+         request.resource.data.status == 'draft' &&
+         request.resource.data.isDeleted == resource.data.isDeleted) ||
+        (hasAnyRole(['case_reviewer']) &&
+         resource.data.status == 'pending_review' &&
+         request.resource.data.status in ['approved', 'rejected'] &&
+         request.resource.data.diff(resource.data).affectedKeys()
+           .hasOnly(['status', 'assignedReviewerId', 'updatedAt', 'updatedBy']));
+
+      // "Delete" from the UI is always a soft delete (an `update` that sets isDeleted), reserved
+      // for super_admin/admin above — hard delete is out of scope for this module.
+      allow delete: if false;
+    }
+
+    // Default deny for every other collection until its module is implemented.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
