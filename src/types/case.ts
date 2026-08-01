@@ -17,6 +17,11 @@ export type CaseStatus = (typeof CASE_STATUSES)[number];
 export const CASE_PRIORITIES = ['low', 'medium', 'high', 'critical'] as const;
 export type CasePriority = (typeof CASE_PRIORITIES)[number];
 
+/** Whether the social researcher's field visit(s) for this case have happened yet — distinct
+ * from the case's overall lifecycle `status` below. */
+export const SOCIAL_RESEARCH_STATUSES = ['not_started', 'in_progress', 'completed'] as const;
+export type SocialResearchStatus = (typeof SOCIAL_RESEARCH_STATUSES)[number];
+
 export interface CaseAddress {
   governorateId: string;
   /** Denormalized at write-time so list/detail views don't need a lookup join to render an
@@ -24,6 +29,8 @@ export interface CaseAddress {
   governorateName: string;
   cityId: string;
   cityName: string;
+  villageId: string;
+  villageName: string;
   details: string;
 }
 
@@ -48,6 +55,7 @@ export interface Case {
   caseTypeIds: string[];
   priorityLevel: CasePriority;
   status: CaseStatus;
+  socialResearchStatus: SocialResearchStatus;
   assignedResearcherId: string | null;
   assignedResearcherName: string | null;
   assignedReviewerId: string | null;
@@ -63,4 +71,22 @@ export interface Case {
   createdAt: Timestamp;
   updatedBy: string;
   updatedAt: Timestamp;
+}
+
+/** `cases/{caseId}/attachments/{attachmentId}` — ID card images and supporting documents. */
+export const CASE_ATTACHMENT_CATEGORIES = ['id_card', 'supporting_document'] as const;
+export type CaseAttachmentCategory = (typeof CASE_ATTACHMENT_CATEGORIES)[number];
+
+export interface CaseAttachment {
+  id: string;
+  caseId: string;
+  category: CaseAttachmentCategory;
+  fileName: string;
+  fileUrl: string;
+  filePath: string;
+  fileType: string;
+  fileSize: number;
+  isDeleted: boolean;
+  createdAt: Timestamp;
+  createdBy: string;
 }

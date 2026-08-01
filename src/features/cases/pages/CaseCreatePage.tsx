@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { PageHeader } from '@components/common';
 import { CaseForm } from '../components/CaseForm';
-import { createCase } from '../api/caseService';
+import { createCase, findCaseByNationalId } from '../api/caseService';
 import { useAuth } from '@features/auth/hooks/useAuth';
 import { showSnackbar } from '@store/snackbarStore';
 import { CREATABLE_CASE_STATUSES, CASE_STATUS_LABELS_AR } from '@constants/caseStatus';
@@ -21,12 +21,15 @@ const DEFAULT_VALUES: CaseFormInput = {
   phone: '',
   governorateId: '',
   cityId: '',
+  villageId: '',
   addressDetails: '',
   caseTypeIds: [],
   familyMembersCount: 1,
   monthlyIncome: 0,
   monthlyExpenses: 0,
+  priorityLevel: 'medium',
   status: 'draft',
+  socialResearchStatus: 'not_started',
   notes: '',
 };
 
@@ -45,14 +48,21 @@ export function CaseCreatePage() {
     values: CaseFormValues,
     governorateName: string,
     cityName: string,
+    villageName: string,
   ): Promise<void> {
     if (!user) return;
     setSubmitting(true);
     try {
-      const caseId = await createCase(values, governorateName, cityName, {
+      const duplicate = await findCaseByNationalId(values.nationalId);
+      if (duplicate) {
+        showSnackbar.error(t('cases.messages.duplicateNationalId'));
+        setSubmitting(false);
+        return;
+      }
+
+      const caseId = await createCase(values, governorateName, cityName, villageName, {
         uid: user.uid,
-        displayName: user?.profile?.displayName || user.email || 'مستخدم',
-        role: user?.profile?.role || 'admin',
+        displayName: user?.profile?.displayName ?? user.email ?? 'مستخدم',
       });
       showSnackbar.success(t('cases.messages.createSuccess'));
       void navigate(getCaseDetailsPath(caseId), { replace: true });

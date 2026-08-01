@@ -14,21 +14,17 @@ import { useTranslation } from 'react-i18next';
 import { SIDEBAR_NAV_ITEMS } from '@constants/navigation';
 import { DRAWER_WIDTH, DRAWER_WIDTH_COLLAPSED } from '@constants/app';
 import { useSidebarStore } from '@store/sidebarStore';
-import { useAuth } from '@features/auth/hooks/useAuth';
-import { hasAnyRole } from '@utils/permissions';
 import { SidebarNavItem } from './SidebarNavItem';
 
 export function Sidebar() {
   const { t } = useTranslation();
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
-  const { role } = useAuth();
   const collapsed = useSidebarStore((state) => state.collapsed);
   const toggleCollapsed = useSidebarStore((state) => state.toggleCollapsed);
   const mobileOpen = useSidebarStore((state) => state.mobileOpen);
   const closeMobile = useSidebarStore((state) => state.closeMobile);
 
-  const visibleItems = SIDEBAR_NAV_ITEMS.filter((item) => hasAnyRole(role, item.roles));
   const width = collapsed ? DRAWER_WIDTH_COLLAPSED : DRAWER_WIDTH;
 
   const content = (
@@ -56,7 +52,7 @@ export function Sidebar() {
       </Stack>
       <Divider />
       <List sx={{ flex: 1, overflowY: 'auto', py: 1 }}>
-        {visibleItems.map((item) => (
+        {SIDEBAR_NAV_ITEMS.map((item) => (
           <SidebarNavItem
             key={item.path}
             item={item}

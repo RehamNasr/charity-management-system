@@ -30,7 +30,6 @@ import { useThemeStore } from '@store/themeStore';
 import { useNotificationsUiStore } from '@store/notificationsUiStore';
 import { useAuth } from '@features/auth/hooks/useAuth';
 import { logout } from '@features/auth/api/authService';
-import { ROLE_LABELS_AR } from '@constants/roles';
 
 export function Topbar() {
   const { t } = useTranslation();
@@ -54,7 +53,6 @@ export function Topbar() {
   };
 
   const displayName = user?.profile?.displayName ?? user?.email ?? '';
-  const roleLabel = user?.profile ? ROLE_LABELS_AR[user.profile.role] : '';
 
   return (
     <AppBar
@@ -137,9 +135,9 @@ export function Topbar() {
               <Typography variant="subtitle2" fontWeight={700} noWrap>
                 {displayName}
               </Typography>
-              {roleLabel && (
+              {user?.email && (
                 <Typography variant="caption" color="text.secondary">
-                  {roleLabel}
+                  {user.email}
                 </Typography>
               )}
             </Box>

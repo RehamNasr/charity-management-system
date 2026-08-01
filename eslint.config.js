@@ -6,7 +6,17 @@ import tseslint from 'typescript-eslint';
 import eslintConfigPrettier from 'eslint-config-prettier';
 
 export default tseslint.config(
-  { ignores: ['dist', 'dev-dist', 'node_modules', 'coverage'] },
+  {
+    ignores: [
+      'dist',
+      'dev-dist',
+      'node_modules',
+      'coverage',
+      // Generated embedded-font data asset (a single ~575KB base64 string) — not hand-written
+      // logic; ESLint's parser chokes on a literal this large ("Maximum call stack size exceeded").
+      'src/assets/fonts/amiri-font.ts',
+    ],
+  },
   {
     extends: [
       js.configs.recommended,

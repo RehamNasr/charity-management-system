@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { CASE_STATUSES } from '@types-app/case';
+import { CASE_STATUSES, CASE_PRIORITIES, SOCIAL_RESEARCH_STATUSES } from '@types-app/case';
 
 const EGYPT_NATIONAL_ID_PATTERN = /^[0-9]{14}$/;
 const EGYPT_PHONE_PATTERN = /^01[0125][0-9]{8}$/;
@@ -10,6 +10,7 @@ export const caseFormSchema = z.object({
   phone: z.string().regex(EGYPT_PHONE_PATTERN, 'validation.invalidPhone'),
   governorateId: z.string().min(1, 'validation.required'),
   cityId: z.string().min(1, 'validation.required'),
+  villageId: z.string().min(1, 'validation.required'),
   addressDetails: z.string().min(3, 'validation.required'),
   caseTypeIds: z.array(z.string()).min(1, 'validation.atLeastOneCaseType'),
   familyMembersCount: z.coerce
@@ -22,7 +23,9 @@ export const caseFormSchema = z.object({
   monthlyExpenses: z.coerce
     .number({ error: 'validation.invalidNumber' })
     .min(0, 'validation.minValue0'),
+  priorityLevel: z.enum(CASE_PRIORITIES, 'validation.required'),
   status: z.enum(CASE_STATUSES, 'validation.required'),
+  socialResearchStatus: z.enum(SOCIAL_RESEARCH_STATUSES, 'validation.required'),
   notes: z.string().max(2000, 'validation.maxLength2000').optional(),
 });
 

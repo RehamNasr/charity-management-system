@@ -3,18 +3,15 @@ import CardContent from '@mui/material/CardContent';
 import Stack from '@mui/material/Stack';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
-import Chip from '@mui/material/Chip';
 import { useTranslation } from 'react-i18next';
 import { PageHeader } from '@components/common';
 import { useAuth } from '../hooks/useAuth';
-import { ROLE_LABELS_AR } from '@constants/roles';
 
 export function ProfilePage() {
   const { t } = useTranslation();
   const { user } = useAuth();
 
   const displayName = user?.profile?.displayName ?? user?.email ?? '';
-  const roleLabel = user?.profile ? ROLE_LABELS_AR[user.profile.role] : '';
 
   return (
     <Stack spacing={3}>
@@ -32,9 +29,6 @@ export function ProfilePage() {
               <Typography variant="body2" color="text.secondary">
                 {user?.email}
               </Typography>
-              {roleLabel && (
-                <Chip label={roleLabel} size="small" color="primary" variant="outlined" />
-              )}
             </Stack>
           </Stack>
         </CardContent>

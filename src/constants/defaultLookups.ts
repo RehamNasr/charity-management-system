@@ -1,4 +1,4 @@
-import type { CityLookupItem, LookupItem } from '@types-app/lookup';
+import type { CityLookupItem, LookupItem, VillageLookupItem } from '@types-app/lookup';
 import type { LookupCollectionName } from '@services/lookup.service';
 
 export const DEFAULT_GOVERNORATES: (LookupItem & { id: string })[] = [
@@ -62,19 +62,31 @@ export const DEFAULT_CITIES: (CityLookupItem & { id: string })[] = [
   { id: 'alex-6', governorateId: 'alexandria', name: 'العامرية', order: 6, isActive: true },
 ];
 
+/** Phase 1 case-type catalogue (Beneficiary Cases requirements). */
 export const DEFAULT_CASE_TYPES: (LookupItem & { id: string })[] = [
-  { id: 'orphans', name: 'كفالة أيتام', order: 1, isActive: true },
-  { id: 'monthly-assistance', name: 'إعانة شهرية', order: 2, isActive: true },
-  { id: 'medical', name: 'علاج ومستلزمات طبية', order: 3, isActive: true },
-  { id: 'debt-relief', name: 'سداد ديون / غارمات', order: 4, isActive: true },
-  { id: 'marriage', name: 'تجهيز يتيمات / زواج', order: 5, isActive: true },
-  { id: 'housing', name: 'ترميم وتجهيز منازل', order: 6, isActive: true },
-  { id: 'food-packs', name: 'كرتونة إطعام / مواد غذائية', order: 7, isActive: true },
-  { id: 'emergency', name: 'مساعدات طارئة', order: 8, isActive: true },
+  { id: 'orphan', name: 'يتيم', order: 1, isActive: true },
+  { id: 'widow', name: 'أرملة', order: 2, isActive: true },
+  { id: 'patient', name: 'مريض', order: 3, isActive: true },
+  { id: 'bride', name: 'عروس', order: 4, isActive: true },
+  { id: 'student', name: 'طالب', order: 5, isActive: true },
+  { id: 'interest_free_loan', name: 'قرض حسن', order: 6, isActive: true },
+  { id: 'other', name: 'أخرى', order: 7, isActive: true },
+];
+
+export const DEFAULT_VILLAGES: (VillageLookupItem & { id: string })[] = [
+  // وسط البلد (القاهرة)
+  { id: 'cairo-1-1', cityId: 'cairo-1', name: 'الفجالة', order: 1, isActive: true },
+  { id: 'cairo-1-2', cityId: 'cairo-1', name: 'باب اللوق', order: 2, isActive: true },
+  // مدينة نصر (القاهرة)
+  { id: 'cairo-2-1', cityId: 'cairo-2', name: 'الحي السابع', order: 1, isActive: true },
+  { id: 'cairo-2-2', cityId: 'cairo-2', name: 'الحي العاشر', order: 2, isActive: true },
+  // الدقي (الجيزة)
+  { id: 'giza-1-1', cityId: 'giza-1', name: 'المهندسين الجديدة', order: 1, isActive: true },
 ];
 
 export const DEFAULT_LOOKUPS: Record<LookupCollectionName, (LookupItem & { id: string })[]> = {
   governorates: DEFAULT_GOVERNORATES,
   cities: DEFAULT_CITIES,
+  villages: DEFAULT_VILLAGES,
   caseTypes: DEFAULT_CASE_TYPES,
 };

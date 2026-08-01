@@ -21,14 +21,24 @@ export function formatRelativeTime(value: Date | string | number): string {
   return formatDistanceToNow(date, { locale: ar, addSuffix: true });
 }
 
-const currencyFormatter = new Intl.NumberFormat('ar-EG', {
-  style: 'currency',
-  currency: 'EGP',
+const CURRENCY_LABEL = 'ج.م';
+
+/** Western digits + comma thousands separators, no decimals unless the amount actually has a
+ * fractional part — `Intl.NumberFormat('ar-EG', { style: 'currency', currency: 'EGP' })` produces
+ * Arabic-Indic digits and a trailing "٫٠٠" (e.g. "٤٬٠٠٠٫٠٠ ج.م.‏"), which is the confusing format
+ * this replaces. Money throughout the app should go through this single function — see the
+ * `formatCurrency` usages across dashboard/donations/expenses/reports/etc. */
+const wholeAmountFormatter = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });
+const fractionalAmountFormatter = new Intl.NumberFormat('en-US', {
+  minimumFractionDigits: 2,
   maximumFractionDigits: 2,
 });
 
 export function formatCurrency(amount: number): string {
-  return currencyFormatter.format(amount);
+  const formattedAmount = Number.isInteger(amount)
+    ? wholeAmountFormatter.format(amount)
+    : fractionalAmountFormatter.format(amount);
+  return `${formattedAmount} ${CURRENCY_LABEL}`;
 }
 
 const numberFormatter = new Intl.NumberFormat('ar-EG');

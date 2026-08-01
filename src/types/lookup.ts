@@ -11,3 +11,9 @@ export interface LookupItem {
 export interface CityLookupItem extends LookupItem {
   governorateId: string;
 }
+
+/** `villages/{id}` additionally carries the city/center it belongs to (docs/ARCHITECTURE.md
+ * §6.5 — "village → city" parent/child relationship). */
+export interface VillageLookupItem extends LookupItem {
+  cityId: string;
+}

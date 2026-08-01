@@ -74,8 +74,6 @@
     "minValue1": "Value must be at least 1"
   },
   "errors": {
-    "unauthorizedTitle": "Access Denied",
-    "unauthorizedDescription": "You don't have sufficient permissions to view this page.",
     "notFoundTitle": "Page Not Found",
     "notFoundDescription": "The page you're looking for doesn't exist or has been moved.",
     "backToDashboard": "Back to Dashboard"
@@ -85,8 +83,7 @@
     "defaultCancel": "Cancel"
   },
   "settings": {
-    "lookupsTitle": "Lookup Lists",
-    "permissionsTitle": "Role Permissions"
+    "lookupsTitle": "Lookup Lists"
   },
   "cases": {
     "listTitle": "Cases",
@@ -94,7 +91,6 @@
     "newCase": "New Case",
     "editCase": "Edit Case",
     "caseDetails": "Case Details",
-    "reviewOnlyNotice": "As a case reviewer, you can only approve or reject this case without editing its data.",
     "fields": {
       "caseNumber": "Case Number",
       "fullName": "Applicant Name",
@@ -112,7 +108,9 @@
       "priority": "Priority",
       "createdAt": "Created At",
       "createdBy": "Created By",
-      "assignedResearcher": "Assigned Researcher"
+      "assignedResearcher": "Assigned Researcher",
+      "village": "Village",
+      "socialResearchStatus": "Social Research Status"
     },
     "selectGovernorateFirst": "Select a governorate first",
     "noCitiesForGovernorate": "No cities registered for this governorate",
@@ -128,7 +126,7 @@
       "backToList": "Back to Cases"
     },
     "filters": {
-      "searchPlaceholder": "Search by name...",
+      "searchPlaceholder": "Search by name, national ID, or phone...",
       "statusFilterLabel": "Filter by status",
       "allStatuses": "All statuses"
     },
@@ -144,13 +142,303 @@
       "deleteError": "Failed to delete the case",
       "loadError": "Failed to load case data",
       "saveError": "Failed to save the case, please try again",
-      "notFound": "This case could not be found"
+      "notFound": "This case could not be found",
+      "duplicateNationalId": "This national ID is already registered to another case."
     },
     "empty": {
       "title": "No cases yet",
-      "description": "Start by adding the first beneficiary case",
+      "description": "Start by adding the first beneficiary case to view it here",
       "noResultsTitle": "No matching results",
       "noResultsDescription": "Try adjusting your search term or status filter"
+    },
+    "selectCityFirst": "Select the city/center first",
+    "attachments": {
+      "idCardTitle": "ID Card Images",
+      "supportingDocumentsTitle": "Supporting Documents",
+      "uploadFiles": "Upload Files",
+      "empty": "No files uploaded yet",
+      "supportedFormats": "Images (JPG, PNG) and PDF documents",
+      "preview": "Preview",
+      "uploadSuccess": "File uploaded successfully",
+      "uploadError": "Failed to upload file, please try again",
+      "deleteSuccess": "File deleted successfully",
+      "deleteError": "Failed to delete file"
+    },
+    "visits": {
+      "title": "Social Research Visits",
+      "empty": "No visits recorded for this case yet"
     }
+  },
+  "visits": {
+    "listTitle": "Social Research Visits",
+    "listDescription": "Manage and record field social research visits, reports, and recommendations",
+    "newVisit": "Add New Visit",
+    "editVisit": "Edit Visit",
+    "visitDetails": "Visit Details",
+    "selectCase": "Select Case",
+    "selectCasePlaceholder": "Search case by name or case number...",
+    "changeCase": "Change Case",
+    "noCaseSelected": "No case selected yet",
+    "tabs": {
+      "overview": "Overview",
+      "report": "Detailed Report",
+      "attachments": "Attachments & Photos",
+      "history": "Audit History",
+      "timeline": "Timeline"
+    },
+    "sections": {
+      "caseInfo": "Section 1: Case & Beneficiary Information",
+      "visitInfo": "Section 2: Visit Details & Location",
+      "visitReport": "Section 3: Field Research Report",
+      "recommendation": "Section 4: Recommendation & Decision",
+      "attachments": "Section 5: Attachments & Media"
+    },
+    "fields": {
+      "visitNumber": "Visit Number",
+      "caseNumber": "Case Number",
+      "beneficiaryName": "Beneficiary Name",
+      "visitDate": "Visit Date",
+      "visitType": "Visit Type",
+      "status": "Status",
+      "priority": "Priority",
+      "researcher": "Social Researcher",
+      "summary": "Visit Summary",
+      "detailedReport": "Detailed Report",
+      "livingConditions": "Living Conditions & Housing",
+      "employmentStatus": "Employment & Work Status",
+      "incomeVerification": "Income & Financial Verification",
+      "healthStatus": "Health Status",
+      "childrenStatus": "Children & Education Status",
+      "additionalNotes": "Additional Notes",
+      "recommendation": "Final Recommendation",
+      "recommendationReason": "Recommendation Reason",
+      "suggestedAssistance": "Suggested Assistance",
+      "suggestedAmount": "Suggested Amount (EGP)",
+      "nextVisitDate": "Next Visit Date (Reminder)",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "getGpsLocation": "Capture current location via GPS",
+      "addressDetails": "Address Details"
+    },
+    "statuses": {
+      "scheduled": "Scheduled",
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "missed": "Missed"
+    },
+    "types": {
+      "initial_visit": "Initial Visit",
+      "follow_up": "Follow-up",
+      "emergency": "Emergency",
+      "verification": "Verification",
+      "monthly_review": "Monthly Review",
+      "other": "Other"
+    },
+    "recommendations": {
+      "approve": "Approve Case",
+      "reject": "Reject Case",
+      "need_more_documents": "Need More Documents",
+      "need_another_visit": "Need Another Visit",
+      "increase_assistance": "Increase Assistance",
+      "reduce_assistance": "Reduce Assistance",
+      "suspend_case": "Suspend Case",
+      "close_case": "Close Case"
+    },
+    "priorities": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High",
+      "urgent": "Urgent"
+    },
+    "filters": {
+      "searchPlaceholder": "Search by beneficiary, case number, researcher...",
+      "visitType": "Visit Type",
+      "status": "Status",
+      "recommendation": "Recommendation",
+      "researcher": "Researcher",
+      "dateFrom": "From Date",
+      "dateTo": "To Date",
+      "governorate": "Governorate",
+      "city": "City / Village",
+      "caseNumber": "Case Number",
+      "beneficiaryName": "Beneficiary Name",
+      "allTypes": "All visit types",
+      "allStatuses": "All statuses",
+      "allRecommendations": "All recommendations",
+      "allResearchers": "All researchers",
+      "resetFilters": "Reset Filters",
+      "exportSelected": "Export Selected (CSV)",
+      "exportAll": "Export Search Results (CSV)"
+    },
+    "actions": {
+      "create": "Save Visit",
+      "save": "Save Changes",
+      "delete": "Delete Visit",
+      "viewDetails": "View Details",
+      "uploadFiles": "Upload Attachments",
+      "download": "Download",
+      "preview": "Preview",
+      "backToList": "Back to Visits"
+    },
+    "attachments": {
+      "title": "Visit Attachments",
+      "dragDrop": "Drag and drop files here, or click to select",
+      "supportedFormats": "Images (JPG, PNG, WEBP), PDF documents",
+      "uploadSuccess": "Attachment uploaded successfully",
+      "deleteConfirm": "Are you sure you want to delete this attachment?",
+      "deleteSuccess": "Attachment deleted successfully",
+      "empty": "No attachments uploaded for this visit"
+    },
+    "history": {
+      "title": "Visit Audit History",
+      "events": {
+        "visit_created": "Visit Created",
+        "report_updated": "Detailed Report Updated",
+        "recommendation_changed": "Recommendation Changed",
+        "attachment_uploaded": "New Attachment Uploaded",
+        "attachment_deleted": "Attachment Deleted",
+        "status_changed": "Visit Status Changed"
+      },
+      "empty": "No history events recorded yet"
+    },
+    "messages": {
+      "createSuccess": "Visit recorded successfully",
+      "updateSuccess": "Visit changes saved successfully",
+      "deleteConfirmTitle": "Delete Visit",
+      "deleteConfirmMessage": "Are you sure you want to delete this visit? It will be soft deleted and can be restored.",
+      "deleteSuccess": "Visit deleted successfully",
+      "deleteError": "Failed to delete visit",
+      "loadError": "Failed to load visit data",
+      "saveError": "Failed to save visit, please try again",
+      "notFound": "Requested visit could not be found",
+      "gpsSuccess": "GPS location captured successfully",
+      "gpsError": "Could not determine location. Please ensure location services are enabled."
+    },
+    "empty": {
+      "title": "No visits recorded yet",
+      "description": "Add your first field social research visit to track beneficiary cases",
+      "noResultsTitle": "No visits match your filters",
+      "noResultsDescription": "Try adjusting your search criteria or filter options"
+    }
+  },
+  "donors": {
+    "listTitle": "Donors",
+    "listDescription": "Manage donor records",
+    "newDonor": "Add Donor",
+    "fields": {
+      "name": "Name",
+      "phone": "Phone",
+      "email": "Email",
+      "notes": "Notes",
+      "createdAt": "Added On"
+    },
+    "messages": {
+      "createSuccess": "Donor added successfully",
+      "saveError": "Failed to save donor",
+      "deleteConfirmTitle": "Delete Donor",
+      "deleteConfirmMessage": "Are you sure you want to delete this donor?",
+      "deleteSuccess": "Donor deleted successfully",
+      "deleteError": "Failed to delete donor"
+    },
+    "empty": {
+      "title": "No donors yet",
+      "description": "Start by adding your first donor"
+    }
+  },
+  "donations": {
+    "listTitle": "Donations",
+    "listDescription": "Record and track incoming donations",
+    "newDonation": "Add Donation",
+    "fields": {
+      "donorName": "Donor",
+      "amount": "Amount",
+      "date": "Date",
+      "method": "Payment Method",
+      "notes": "Notes"
+    },
+    "messages": {
+      "createSuccess": "Donation recorded successfully",
+      "saveError": "Failed to save donation",
+      "deleteConfirmTitle": "Delete Donation",
+      "deleteConfirmMessage": "Are you sure you want to delete this donation?",
+      "deleteSuccess": "Donation deleted successfully",
+      "deleteError": "Failed to delete donation"
+    },
+    "empty": {
+      "title": "No donations yet",
+      "description": "Start by recording your first donation"
+    }
+  },
+  "expenses": {
+    "listTitle": "Expenses",
+    "listDescription": "Record and track the charity's expenses",
+    "newExpense": "Add Expense",
+    "fields": {
+      "category": "Category",
+      "amount": "Amount",
+      "date": "Date",
+      "description": "Description"
+    },
+    "messages": {
+      "createSuccess": "Expense recorded successfully",
+      "saveError": "Failed to save expense",
+      "deleteConfirmTitle": "Delete Expense",
+      "deleteConfirmMessage": "Are you sure you want to delete this expense?",
+      "deleteSuccess": "Expense deleted successfully",
+      "deleteError": "Failed to delete expense"
+    },
+    "empty": {
+      "title": "No expenses yet",
+      "description": "Start by recording your first expense"
+    }
+  },
+  "dashboard": {
+    "stats": {
+      "totalCases": "Total Beneficiary Cases",
+      "newCases": "New Cases This Month",
+      "totalDonations": "Total Donations",
+      "totalExpenses": "Total Expenses",
+      "currentBalance": "Current Balance",
+      "assistedThisMonth": "Beneficiaries Assisted This Month"
+    },
+    "quickActions": {
+      "title": "Quick Actions",
+      "addCase": "Add New Beneficiary",
+      "addDonation": "Add Donation",
+      "addExpense": "Add Expense",
+      "addVisit": "Add Visit"
+    },
+    "recentActivity": {
+      "title": "Recent Activity",
+      "empty": "No activity yet"
+    },
+    "charts": {
+      "monthlyTrend": "Donations vs Expenses (Last 12 Months)",
+      "casesByStatus": "Beneficiary Cases by Status",
+      "casesByType": "Beneficiary Cases by Type",
+      "monthlyNewCases": "Monthly New Cases",
+      "noData": "Not enough data to show this chart yet"
+    }
+  },
+  "reports": {
+    "description": "Reports on cases, donations, and expenses",
+    "tabs": {
+      "beneficiary": "Beneficiary Report",
+      "donorStatement": "Donor Statement",
+      "income": "Income Report",
+      "expense": "Expense Report",
+      "monthly": "Monthly Report",
+      "annual": "Annual Report"
+    },
+    "exportExcel": "Export Excel",
+    "exportPdf": "Export PDF",
+    "allDonors": "All Donors",
+    "total": "Total",
+    "income": "Income",
+    "expense": "Expenses",
+    "balance": "Balance",
+    "month": "Month",
+    "selectMonth": "Select Month",
+    "selectYear": "Select Year"
   }
 }

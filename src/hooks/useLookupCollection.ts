@@ -2,13 +2,14 @@ import { useMemo } from 'react';
 import { useCollection } from './useCollection';
 import {
   activeCitiesByGovernorateQuery,
+  activeVillagesByCityQuery,
   activeLookupQuery,
   type LookupCollectionName,
 } from '@services/lookup.service';
-import type { CityLookupItem, LookupItem } from '@types-app/lookup';
+import type { CityLookupItem, LookupItem, VillageLookupItem } from '@types-app/lookup';
 import type { AsyncState } from '@types-app/common';
 
-import { DEFAULT_CITIES, DEFAULT_LOOKUPS } from '@constants/defaultLookups';
+import { DEFAULT_CITIES, DEFAULT_VILLAGES, DEFAULT_LOOKUPS } from '@constants/defaultLookups';
 
 /**
  * Realtime, active+ordered view over a lookup collection (governorates, cities, caseTypes — see
@@ -55,6 +56,33 @@ export function useCitiesByGovernorate(
     }
     return result.data ?? [];
   }, [governorateId, result.data, result.loading]);
+
+  return {
+    ...result,
+    data: fallbackData,
+  };
+}
+
+/** Realtime villages scoped to the selected city/center; mirrors `useCitiesByGovernorate` one
+ * level down the address hierarchy (docs/ARCHITECTURE.md §6.5). */
+export function useVillagesByCity(
+  cityId: string | null,
+): AsyncState<(VillageLookupItem & { id: string })[]> {
+  const villagesQuery = useMemo(
+    () => (cityId ? activeVillagesByCityQuery(cityId) : null),
+    [cityId],
+  );
+  const result = useCollection(villagesQuery, `villages:${cityId ?? ''}`);
+
+  const fallbackData = useMemo(() => {
+    if (!cityId) return [];
+    if (!result.loading && (!result.data || result.data.length === 0)) {
+      const defaultForCity = DEFAULT_VILLAGES.filter((v) => v.cityId === cityId);
+      if (defaultForCity.length > 0) return defaultForCity;
+      return [{ id: `${cityId}-main`, cityId, name: 'القرية الرئيسية', order: 1, isActive: true }];
+    }
+    return result.data ?? [];
+  }, [cityId, result.data, result.loading]);
 
   return {
     ...result,

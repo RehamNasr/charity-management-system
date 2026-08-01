@@ -6,7 +6,6 @@ import {
   setPersistence,
   signInWithEmailAndPassword,
   signOut,
-  type IdTokenResult,
   type Unsubscribe,
   type User,
 } from 'firebase/auth';
@@ -34,9 +33,4 @@ export async function sendPasswordReset(email: string): Promise<void> {
 
 export function onAuthStateChangedListener(callback: (user: User | null) => void): Unsubscribe {
   return onAuthStateChanged(auth, callback);
-}
-
-/** Custom claims (role) are the Security-Rules source of truth (docs/ARCHITECTURE.md §3/§7). */
-export async function getIdTokenResult(user: User, forceRefresh = false): Promise<IdTokenResult> {
-  return user.getIdTokenResult(forceRefresh);
 }

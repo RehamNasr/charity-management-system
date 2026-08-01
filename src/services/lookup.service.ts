@@ -1,11 +1,11 @@
 import { collectionRef, query, where } from '@firebase-app/firestore';
 import { orderBy, type CollectionReference, type Query } from 'firebase/firestore';
-import type { CityLookupItem, LookupItem } from '@types-app/lookup';
+import type { CityLookupItem, LookupItem, VillageLookupItem } from '@types-app/lookup';
 
 /** Names of every lookup collection defined so far (docs/ARCHITECTURE.md §6.5). Kept as a literal
  * union rather than a free string so a typo in a feature can't silently query a nonexistent
  * collection. */
-export type LookupCollectionName = 'governorates' | 'cities' | 'caseTypes';
+export type LookupCollectionName = 'governorates' | 'cities' | 'villages' | 'caseTypes';
 
 export function lookupCollectionRef<T extends LookupItem = LookupItem>(
   name: LookupCollectionName,
@@ -31,6 +31,17 @@ export function activeCitiesByGovernorateQuery(governorateId: string): Query<Cit
     lookupCollectionRef<CityLookupItem>('cities'),
     where('isActive', '==', true),
     where('governorateId', '==', governorateId),
+    orderBy('order', 'asc'),
+  );
+}
+
+/** Active, ordered villages scoped to one city/center — used by the Case form's dependent
+ * city → village select (docs/ARCHITECTURE.md §6.5). */
+export function activeVillagesByCityQuery(cityId: string): Query<VillageLookupItem> {
+  return query(
+    lookupCollectionRef<VillageLookupItem>('villages'),
+    where('isActive', '==', true),
+    where('cityId', '==', cityId),
     orderBy('order', 'asc'),
   );
 }

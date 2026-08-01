@@ -1,5 +1,11 @@
-import { CASE_STATUSES, type CaseStatus, type CasePriority } from '@types-app/case';
-import type { Role } from '@types-app/user';
+import {
+  CASE_STATUSES,
+  CASE_PRIORITIES,
+  SOCIAL_RESEARCH_STATUSES,
+  type CaseStatus,
+  type CasePriority,
+  type SocialResearchStatus,
+} from '@types-app/case';
 import type { SelectOption } from '@types-app/common';
 
 export const CASE_STATUS_LABELS_AR: Record<CaseStatus, string> = {
@@ -31,51 +37,12 @@ export const CASE_STATUS_COLORS: Record<
  * transitions, not picked freely at creation time (docs/ARCHITECTURE.md §5). */
 export const CREATABLE_CASE_STATUSES: CaseStatus[] = ['draft', 'under_research'];
 
-/**
- * Allowed next states from each status, mirroring the state-machine diagram in
- * docs/ARCHITECTURE.md §5. The current status is always offered too (see `getSelectableStatuses`)
- * so an edit that doesn't touch status is a no-op rather than a forced transition.
- */
-const CASE_STATUS_TRANSITIONS: Record<CaseStatus, CaseStatus[]> = {
-  draft: ['under_research'],
-  under_research: ['pending_review'],
-  pending_review: ['approved', 'rejected'],
-  approved: ['receiving_assistance', 'suspended', 'closed'],
-  rejected: ['closed'],
-  receiving_assistance: ['suspended', 'closed'],
-  suspended: ['receiving_assistance', 'closed'],
-  closed: [],
-};
-
-export function getSelectableStatuses(currentStatus: CaseStatus): CaseStatus[] {
-  return [currentStatus, ...CASE_STATUS_TRANSITIONS[currentStatus]];
-}
-
+/** Every authenticated user may set a case to any status — there are no role-based transition
+ * restrictions (docs/ARCHITECTURE.md §3). */
 export const CASE_STATUS_OPTIONS: SelectOption<CaseStatus>[] = CASE_STATUSES.map((status) => ({
   value: status,
   label: CASE_STATUS_LABELS_AR[status],
 }));
-
-function toOptions(statuses: CaseStatus[]): SelectOption<CaseStatus>[] {
-  return statuses.map((status) => ({ value: status, label: CASE_STATUS_LABELS_AR[status] }));
-}
-
-/**
- * The status choices to offer on the Edit form for a given role/current-status combination,
- * mirroring firestore.rules' `cases` update rule exactly (docs/ARCHITECTURE.md §3/§5):
- *  - super_admin/admin: unrestricted — every status is a valid target.
- *  - social_researcher/case_reviewer: only the documented forward transitions from the current
- *    status (the rule allows no others).
- *  - data_entry: status can never change server-side, so the only "choice" is the current one.
- */
-export function getEditableStatusOptions(
-  role: Role,
-  currentStatus: CaseStatus,
-): SelectOption<CaseStatus>[] {
-  if (role === 'super_admin' || role === 'admin') return CASE_STATUS_OPTIONS;
-  if (role === 'data_entry') return toOptions([currentStatus]);
-  return toOptions(getSelectableStatuses(currentStatus));
-}
 
 export const CASE_PRIORITY_LABELS_AR: Record<CasePriority, string> = {
   low: 'منخفضة',
@@ -83,3 +50,38 @@ export const CASE_PRIORITY_LABELS_AR: Record<CasePriority, string> = {
   high: 'عالية',
   critical: 'حرجة',
 };
+
+export const CASE_PRIORITY_COLORS: Record<
+  CasePriority,
+  'default' | 'info' | 'warning' | 'error'
+> = {
+  low: 'default',
+  medium: 'info',
+  high: 'warning',
+  critical: 'error',
+};
+
+export const CASE_PRIORITY_OPTIONS: SelectOption<CasePriority>[] = CASE_PRIORITIES.map(
+  (priority) => ({ value: priority, label: CASE_PRIORITY_LABELS_AR[priority] }),
+);
+
+export const SOCIAL_RESEARCH_STATUS_LABELS_AR: Record<SocialResearchStatus, string> = {
+  not_started: 'لم تبدأ',
+  in_progress: 'قيد التنفيذ',
+  completed: 'مكتملة',
+};
+
+export const SOCIAL_RESEARCH_STATUS_COLORS: Record<
+  SocialResearchStatus,
+  'default' | 'info' | 'success'
+> = {
+  not_started: 'default',
+  in_progress: 'info',
+  completed: 'success',
+};
+
+export const SOCIAL_RESEARCH_STATUS_OPTIONS: SelectOption<SocialResearchStatus>[] =
+  SOCIAL_RESEARCH_STATUSES.map((status) => ({
+    value: status,
+    label: SOCIAL_RESEARCH_STATUS_LABELS_AR[status],
+  }));

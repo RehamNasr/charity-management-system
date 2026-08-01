@@ -12,31 +12,21 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { PageHeader, DataTable, type DataTableColumn } from '@components/common';
 import { CaseStatusChip } from '../components/CaseStatusChip';
+import { CasePriorityChip } from '../components/CasePriorityChip';
 import { CasesToolbar } from '../components/CasesToolbar';
 import { useCasesList } from '../hooks/useCasesList';
 import { softDeleteCase } from '../api/caseService';
 import { useAuth } from '@features/auth/hooks/useAuth';
 import { useConfirm } from '@hooks/useConfirm';
 import { showSnackbar } from '@store/snackbarStore';
-import { hasAnyRole } from '@utils/permissions';
 import { formatCurrency, formatDate } from '@utils/formatters';
 import { getCaseDetailsPath, getCaseEditPath, ROUTES } from '@constants/routes';
 import type { Case } from '@types-app/case';
 
-const CREATE_ROLES = ['super_admin', 'admin', 'social_researcher', 'data_entry'] as const;
-const DELETE_ROLES = ['super_admin', 'admin'] as const;
-const EDIT_ROLES = [
-  'super_admin',
-  'admin',
-  'social_researcher',
-  'data_entry',
-  'case_reviewer',
-] as const;
-
 export function CasesListPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { role, user } = useAuth();
+  const { user } = useAuth();
   const confirm = useConfirm();
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
@@ -58,9 +48,6 @@ export function CasesListPage() {
     setPageSize,
   } = useCasesList();
 
-  const canCreate = hasAnyRole(role, [...CREATE_ROLES]);
-  const canDelete = hasAnyRole(role, [...DELETE_ROLES]);
-  const canEdit = hasAnyRole(role, [...EDIT_ROLES]);
   const isFiltered = searchInput.trim().length > 0 || statusFilter !== 'all';
 
   async function handleDelete(row: Case): Promise<void> {
@@ -124,6 +111,11 @@ export function CasesListPage() {
       renderCell: (row) => <CaseStatusChip status={row.status} />,
     },
     {
+      field: 'priorityLevel',
+      headerName: t('cases.fields.priority'),
+      renderCell: (row) => <CasePriorityChip priority={row.priorityLevel} />,
+    },
+    {
       field: 'createdAt',
       headerName: t('cases.fields.createdAt'),
       sortable: true,
@@ -145,25 +137,21 @@ export function CasesListPage() {
               <VisibilityRoundedIcon fontSize="small" />
             </IconButton>
           </Tooltip>
-          {canEdit ? (
-            <Tooltip title={t('cases.actions.edit')}>
-              <IconButton size="small" component={RouterLink} to={getCaseEditPath(row.id)}>
-                <EditRoundedIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          ) : null}
-          {canDelete ? (
-            <Tooltip title={t('cases.actions.delete')}>
-              <IconButton
-                size="small"
-                color="error"
-                disabled={deletingId === row.id}
-                onClick={() => void handleDelete(row)}
-              >
-                <DeleteOutlineRoundedIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          ) : null}
+          <Tooltip title={t('cases.actions.edit')}>
+            <IconButton size="small" component={RouterLink} to={getCaseEditPath(row.id)}>
+              <EditRoundedIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title={t('cases.actions.delete')}>
+            <IconButton
+              size="small"
+              color="error"
+              disabled={deletingId === row.id}
+              onClick={() => void handleDelete(row)}
+            >
+              <DeleteOutlineRoundedIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
         </Stack>
       ),
     },
@@ -175,16 +163,14 @@ export function CasesListPage() {
         title={t('cases.listTitle')}
         description={t('cases.listDescription')}
         actions={
-          canCreate ? (
-            <Button
-              variant="contained"
-              startIcon={<AddRoundedIcon />}
-              component={RouterLink}
-              to={ROUTES.caseNew}
-            >
-              {t('cases.newCase')}
-            </Button>
-          ) : undefined
+          <Button
+            variant="contained"
+            startIcon={<AddRoundedIcon />}
+            component={RouterLink}
+            to={ROUTES.caseNew}
+          >
+            {t('cases.newCase')}
+          </Button>
         }
       />
 

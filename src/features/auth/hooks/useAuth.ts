@@ -1,11 +1,9 @@
 import { useAuthStore } from '@store/authStore';
-import type { Role } from '@types-app/user';
 
 interface UseAuthResult {
   user: ReturnType<typeof useAuthStore.getState>['user'];
   isAuthenticated: boolean;
   isInitializing: boolean;
-  role: Role | undefined;
 }
 
 /** Read-only view over the auth store for components that just need "who is signed in". Mutating
@@ -19,6 +17,5 @@ export function useAuth(): UseAuthResult {
     user,
     isAuthenticated: user !== null,
     isInitializing,
-    role: user?.profile?.role ?? 'admin',
   };
 }

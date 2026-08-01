@@ -1,10 +1,13 @@
 import {
   doc,
+  getDocs,
   limit,
   orderBy,
+  addDoc,
   serverTimestamp,
   updateDoc,
   runTransaction,
+  type Timestamp,
   type OrderByDirection,
   type Query,
   type QueryConstraint,
@@ -12,10 +15,10 @@ import {
 } from 'firebase/firestore';
 import { db } from '@firebase-app/config';
 import { collectionRef, docRef, where, withSoftDeleteFilter } from '@firebase-app/firestore';
+import { uploadToCloudinary } from '@services/cloudinary.service';
 import { normalizeDigits, normalizeSearchValue } from '@utils/normalize';
-import type { Case, CaseStatus } from '@types-app/case';
+import type { Case, CaseAttachment, CaseAttachmentCategory, CaseStatus } from '@types-app/case';
 import type { CaseFormValues } from '../schemas/caseSchema';
-import type { Role } from '@types-app/user';
 
 const CASES_COLLECTION = 'cases';
 const COUNTERS_COLLECTION = 'counters';
@@ -33,10 +36,24 @@ export interface CasesQueryFilters {
   searchTerm: string;
 }
 
+const EGYPT_NATIONAL_ID_LENGTH = 14;
+
+/** Which denormalized field a given search term should be matched against — a search box that
+ * covers full name, national ID, and phone number (Phase 1 requirement) without a full-text
+ * search service, since Firestore range queries can only filter one field at a time. */
+function resolveSearchField(term: string): 'normalizedNationalId' | 'normalizedPhone' | 'normalizedName' {
+  const digitsOnly = normalizeDigits(term);
+  const isNumeric = digitsOnly.length > 0 && digitsOnly === term.replace(/\s/g, '');
+  if (!isNumeric) return 'normalizedName';
+  if (digitsOnly.length >= EGYPT_NATIONAL_ID_LENGTH - 2) return 'normalizedNationalId';
+  return 'normalizedPhone';
+}
+
 /**
  * Builds the live cases query. When a search term is present, Firestore requires the query to be
- * ordered by the range-filtered field itself (`normalizedName`), so the caller's chosen sort is
- * intentionally overridden in that case — see docs/ARCHITECTURE.md §6 design principle #6.
+ * ordered by the range-filtered field itself, so the caller's chosen sort is intentionally
+ * overridden in that case — see docs/ARCHITECTURE.md §6 design principle #6. The search field
+ * itself is auto-detected (name vs. national ID vs. phone) from the shape of the input.
  */
 export function buildCasesQuery(
   filters: CasesQueryFilters,
@@ -50,11 +67,13 @@ export function buildCasesQuery(
     constraints.push(where('status', '==', filters.status));
   }
 
-  const term = normalizeSearchValue(filters.searchTerm);
-  if (term) {
-    constraints.push(where('normalizedName', '>=', term));
-    constraints.push(where('normalizedName', '<=', term + ''));
-    constraints.push(orderBy('normalizedName', 'asc'));
+  const rawTerm = filters.searchTerm.trim();
+  if (rawTerm) {
+    const searchField = resolveSearchField(rawTerm);
+    const term = searchField === 'normalizedName' ? normalizeSearchValue(rawTerm) : normalizeDigits(rawTerm);
+    constraints.push(where(searchField, '>=', term));
+    constraints.push(where(searchField, '<=', term + ''));
+    constraints.push(orderBy(searchField, 'asc'));
   } else {
     constraints.push(orderBy(sortField, sortDirection));
   }
@@ -71,21 +90,43 @@ export function getCaseRef(caseId: string) {
 interface CurrentUserInfo {
   uid: string;
   displayName: string;
-  role: Role;
 }
 
 function buildAddress(
   values: CaseFormValues,
   governorateName: string,
   cityName: string,
+  villageName: string,
 ): Case['address'] {
   return {
     governorateId: values.governorateId,
     governorateName,
     cityId: values.cityId,
     cityName,
+    villageId: values.villageId,
+    villageName,
     details: values.addressDetails.trim(),
   };
+}
+
+/**
+ * Duplicate-registration guard (Phase 1 requirement): looks up an active (non-deleted) case by
+ * national ID. Must be called — and its result checked — before `createCase`, since Firestore
+ * itself has no unique-constraint mechanism; this is the enforcement point.
+ */
+export async function findCaseByNationalId(
+  nationalId: string,
+  excludeCaseId?: string,
+): Promise<Case | null> {
+  const normalized = normalizeDigits(nationalId);
+  const q = withSoftDeleteFilter(
+    collectionRef<Case>(CASES_COLLECTION),
+    where('normalizedNationalId', '==', normalized),
+    limit(5),
+  );
+  const snap = await getDocs(q);
+  const match = snap.docs.find((docSnap) => docSnap.id !== excludeCaseId);
+  return match ? { ...match.data(), id: match.id } : null;
 }
 
 /**
@@ -93,11 +134,15 @@ function buildAddress(
  * counter document (docs/ARCHITECTURE.md §6 — "Firestore counter document, not client
  * `Date.now()`"), atomically with the case document write itself, so two concurrent creates can
  * never collide on the same number and a failed create never burns a number.
+ *
+ * Callers must run `findCaseByNationalId` first and block the submit on a match — this function
+ * does not re-check, since the caller already owns the user-facing error message/UX for that.
  */
 export async function createCase(
   values: CaseFormValues,
   governorateName: string,
   cityName: string,
+  villageName: string,
   currentUser: CurrentUserInfo,
 ): Promise<string> {
   const newCaseRef = doc(collectionRef<Case>(CASES_COLLECTION));
@@ -105,7 +150,6 @@ export async function createCase(
     COUNTERS_COLLECTION,
     CASE_COUNTER_DOC_ID,
   );
-  const isResearcher = currentUser.role === 'social_researcher';
 
   await runTransaction(db, async (transaction) => {
     const counterSnap = await transaction.get(counterRef);
@@ -121,16 +165,17 @@ export async function createCase(
       fullName: values.fullName.trim(),
       nationalId: values.nationalId,
       phoneNumbers: [values.phone],
-      address: buildAddress(values, governorateName, cityName),
+      address: buildAddress(values, governorateName, cityName, villageName),
       familyMembersCount: values.familyMembersCount,
       monthlyIncome: values.monthlyIncome,
       monthlyExpenses: values.monthlyExpenses,
       needReason: values.notes?.trim() ?? '',
       caseTypeIds: values.caseTypeIds,
-      priorityLevel: 'medium',
+      priorityLevel: values.priorityLevel,
       status: values.status,
-      assignedResearcherId: isResearcher ? currentUser.uid : null,
-      assignedResearcherName: isResearcher ? currentUser.displayName : null,
+      socialResearchStatus: values.socialResearchStatus,
+      assignedResearcherId: currentUser.uid,
+      assignedResearcherName: currentUser.displayName,
       assignedReviewerId: null,
       totalAssistanceReceived: 0,
       lastAssistanceDate: null,
@@ -153,29 +198,34 @@ export async function createCase(
 }
 
 /**
- * Full field update for the roles allowed to edit raw case data (super_admin/admin always;
- * social_researcher/data_entry within their own restricted window — see firestore.rules). Never
- * touches `isDeleted` — that's a distinct action (`softDeleteCase`) so the two can't be conflated
- * in a single accidental payload.
+ * Full field update, available to any authenticated user (docs/ARCHITECTURE.md §3 — no
+ * role-based restrictions). Never touches `isDeleted` — that's a distinct action
+ * (`softDeleteCase`) so the two can't be conflated in a single accidental payload.
+ *
+ * Like `createCase`, callers must run `findCaseByNationalId(nationalId, caseId)` first when the
+ * national ID field changed, so an edit can't silently create a second case for the same person.
  */
 export async function updateCase(
   caseId: string,
   values: CaseFormValues,
   governorateName: string,
   cityName: string,
+  villageName: string,
   currentUserUid: string,
 ): Promise<void> {
   await updateDoc(getCaseRef(caseId), {
     fullName: values.fullName.trim(),
     nationalId: values.nationalId,
     phoneNumbers: [values.phone],
-    address: buildAddress(values, governorateName, cityName),
+    address: buildAddress(values, governorateName, cityName, villageName),
     familyMembersCount: values.familyMembersCount,
     monthlyIncome: values.monthlyIncome,
     monthlyExpenses: values.monthlyExpenses,
     needReason: values.notes?.trim() ?? '',
     caseTypeIds: values.caseTypeIds,
+    priorityLevel: values.priorityLevel,
     status: values.status,
+    socialResearchStatus: values.socialResearchStatus,
     normalizedName: normalizeSearchValue(values.fullName),
     normalizedNationalId: normalizeDigits(values.nationalId),
     normalizedPhone: normalizeDigits(values.phone),
@@ -184,50 +234,8 @@ export async function updateCase(
   });
 }
 
-/**
- * The `case_reviewer` approve/reject action — a minimal, separate write touching only the fields
- * firestore.rules allow that role to change, matching §3 "approve/reject status transitions...
- * cannot edit raw case data" precisely rather than reusing the general `updateCase` payload.
- */
-export async function reviewCase(
-  caseId: string,
-  decision: Extract<CaseStatus, 'approved' | 'rejected'>,
-  reviewerUid: string,
-): Promise<void> {
-  await updateDoc(getCaseRef(caseId), {
-    status: decision,
-    assignedReviewerId: reviewerUid,
-    updatedBy: reviewerUid,
-    updatedAt: serverTimestamp(),
-  });
-}
-
-/**
- * Client-side mirror of the raw-field-edit branch of firestore.rules' `cases` update rule — used
- * to decide whether to render the edit form (or a "not editable" notice) before the user attempts
- * a write the server would reject anyway. The Security Rules remain the actual enforcement.
- */
-export function canEditCaseFields(role: Role, targetCase: Case, uid: string): boolean {
-  if (role === 'super_admin' || role === 'admin') return true;
-  if (role === 'social_researcher') {
-    return (
-      targetCase.assignedResearcherId === uid &&
-      (targetCase.status === 'draft' || targetCase.status === 'under_research')
-    );
-  }
-  if (role === 'data_entry') {
-    return targetCase.createdBy === uid && targetCase.status === 'draft';
-  }
-  return false;
-}
-
-/** Client-side mirror of the case_reviewer branch of the same rule. */
-export function canReviewCase(role: Role, targetCase: Case): boolean {
-  return role === 'case_reviewer' && targetCase.status === 'pending_review';
-}
-
-/** Soft delete (docs/ARCHITECTURE.md §6 design principle #7) — restricted to super_admin/admin by
- * firestore.rules. Deleted cases are excluded from every normal query via `withSoftDeleteFilter`. */
+/** Soft delete (docs/ARCHITECTURE.md §6 design principle #7) — available to any authenticated
+ * user. Deleted cases are excluded from every normal query via `withSoftDeleteFilter`. */
 export async function softDeleteCase(caseId: string, deletedByUid: string): Promise<void> {
   await updateDoc(getCaseRef(caseId), {
     isDeleted: true,
@@ -236,4 +244,52 @@ export async function softDeleteCase(caseId: string, deletedByUid: string): Prom
     updatedBy: deletedByUid,
     updatedAt: serverTimestamp(),
   });
+}
+
+// ---------------------------------------------------------------------------
+// Attachments (ID card images + supporting documents)
+// ---------------------------------------------------------------------------
+
+function caseAttachmentsRef(caseId: string) {
+  return collectionRef<CaseAttachment>(`${CASES_COLLECTION}/${caseId}/attachments`);
+}
+
+/** Uploads an ID card image or supporting document to Cloudinary (same unsigned-upload service
+ * the Visits module uses — see `cloudinary.service.ts`) and records it under the case. */
+export async function uploadCaseAttachment(
+  caseId: string,
+  file: File,
+  category: CaseAttachmentCategory,
+  currentUser: CurrentUserInfo,
+): Promise<string> {
+  const { url: fileUrl, publicId } = await uploadToCloudinary(file, `cases/${caseId}/attachments`);
+
+  const newAttachment: WithFieldValue<Omit<CaseAttachment, 'id'>> = {
+    caseId,
+    category,
+    fileName: file.name,
+    fileUrl,
+    filePath: publicId,
+    fileType: file.type,
+    fileSize: file.size,
+    isDeleted: false,
+    createdAt: serverTimestamp() as unknown as Timestamp,
+    createdBy: currentUser.uid,
+  };
+  const attachmentDoc = await addDoc(
+    caseAttachmentsRef(caseId),
+    newAttachment as WithFieldValue<CaseAttachment>,
+  );
+  return attachmentDoc.id;
+}
+
+/** Soft-deletes an attachment record. As with visit attachments, deleting the underlying
+ * Cloudinary asset needs a signed (secret-bearing) request this client-only app can't safely
+ * make, so the Cloudinary file itself is left in place. */
+export async function deleteCaseAttachment(caseId: string, attachmentId: string): Promise<void> {
+  const attachmentDocRef = docRef<CaseAttachment>(
+    `${CASES_COLLECTION}/${caseId}/attachments`,
+    attachmentId,
+  );
+  await updateDoc(attachmentDocRef, { isDeleted: true } as unknown as Record<string, unknown>);
 }

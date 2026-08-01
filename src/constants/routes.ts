@@ -11,6 +11,9 @@ export const ROUTES = {
   caseDetails: '/cases/:caseId',
   caseEdit: '/cases/:caseId/edit',
   visits: '/visits',
+  visitNew: '/visits/new',
+  visitDetails: '/visits/:visitId',
+  visitEdit: '/visits/:visitId/edit',
   assistance: '/assistance',
   reminders: '/reminders',
   notifications: '/notifications',
@@ -21,10 +24,8 @@ export const ROUTES = {
   reports: '/reports',
   users: '/users',
   settingsLookups: '/settings/lookups',
-  settingsPermissions: '/settings/permissions',
   auditLog: '/audit-log',
   profile: '/profile',
-  unauthorized: '/unauthorized',
 } as const;
 
 export type RouteKey = keyof typeof ROUTES;
@@ -36,3 +37,16 @@ export function getCaseDetailsPath(caseId: string): string {
 export function getCaseEditPath(caseId: string): string {
   return `/cases/${caseId}/edit`;
 }
+
+export function getVisitDetailsPath(visitId: string): string {
+  return `/visits/${visitId}`;
+}
+
+export function getVisitEditPath(visitId: string): string {
+  return `/visits/${visitId}/edit`;
+}
+
+export function getVisitNewPath(caseId?: string): string {
+  return caseId ? `/visits/new?caseId=${caseId}` : '/visits/new';
+}
+

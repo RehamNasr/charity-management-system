@@ -1,5 +1,4 @@
 import type { SvgIconComponent } from '@mui/icons-material';
-import type { Role } from './user';
 
 export interface SelectOption<TValue extends string = string> {
   value: TValue;
@@ -35,8 +34,6 @@ export interface NavItem {
   labelKey: string;
   path: string;
   icon: SvgIconComponent;
-  /** Roles allowed to see this item. Omit to allow every authenticated role. */
-  roles?: Role[];
   children?: NavItem[];
 }
 

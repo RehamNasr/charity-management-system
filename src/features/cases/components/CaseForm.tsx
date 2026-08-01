@@ -4,26 +4,31 @@ import { useTranslation } from 'react-i18next';
 import Grid from '@mui/material/Grid2';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { FormTextField, FormSelect } from '@components/form';
-import { LoadingSpinner } from '@components/common';
 import { caseFormSchema, type CaseFormInput, type CaseFormValues } from '../schemas/caseSchema';
-import { useLookupCollection, useCitiesByGovernorate } from '@hooks/useLookupCollection';
+import {
+  useLookupCollection,
+  useCitiesByGovernorate,
+  useVillagesByCity,
+} from '@hooks/useLookupCollection';
 import { showSnackbar } from '@store/snackbarStore';
+import { CASE_PRIORITY_OPTIONS, SOCIAL_RESEARCH_STATUS_OPTIONS } from '@constants/caseStatus';
 import type { CaseStatus } from '@types-app/case';
 import type { SelectOption } from '@types-app/common';
 
 interface CaseFormProps {
   defaultValues: CaseFormInput;
   statusOptions: SelectOption<CaseStatus>[];
-  onSubmit: (values: CaseFormValues, governorateName: string, cityName: string) => Promise<void>;
+  onSubmit: (
+    values: CaseFormValues,
+    governorateName: string,
+    cityName: string,
+    villageName: string,
+  ) => Promise<void>;
   submitLabel: string;
   submitting: boolean;
-  /** case_reviewer can only change `status` (docs/ARCHITECTURE.md §3) — every other field renders
-   * disabled rather than the page building a second, near-duplicate form. */
-  readOnlyExceptStatus?: boolean;
   onCancel: () => void;
 }
 
@@ -33,7 +38,6 @@ export function CaseForm({
   onSubmit,
   submitLabel,
   submitting,
-  readOnlyExceptStatus = false,
   onCancel,
 }: CaseFormProps) {
   const { t } = useTranslation();
@@ -43,18 +47,19 @@ export function CaseForm({
   });
 
   const governorateId = watch('governorateId');
+  const cityId = watch('cityId');
   const governorates = useLookupCollection('governorates');
   const cities = useCitiesByGovernorate(governorateId || null);
+  const villages = useVillagesByCity(cityId || null);
   const caseTypes = useLookupCollection('caseTypes');
-
-  const lookupsLoading = governorates.loading || caseTypes.loading;
 
   const submit = handleSubmit(
     async (values) => {
       const governorateName =
         governorates.data?.find((g) => g.id === values.governorateId)?.name ?? '';
       const cityName = cities.data?.find((c) => c.id === values.cityId)?.name ?? '';
-      await onSubmit(values, governorateName, cityName);
+      const villageName = villages.data?.find((v) => v.id === values.villageId)?.name ?? '';
+      await onSubmit(values, governorateName, cityName, villageName);
     },
     (errors) => {
       console.warn('CaseForm validation errors:', errors);
@@ -62,20 +67,10 @@ export function CaseForm({
     },
   );
 
-  const fieldsDisabled = submitting || readOnlyExceptStatus;
-
-  if (lookupsLoading) {
-    return <LoadingSpinner />;
-  }
+  const fieldsDisabled = submitting;
 
   return (
     <Box component="form" onSubmit={(event) => void submit(event)} noValidate>
-      {readOnlyExceptStatus ? (
-        <Alert severity="info" sx={{ mb: 3 }}>
-          {t('cases.reviewOnlyNotice')}
-        </Alert>
-      ) : null}
-
       <Grid container spacing={2.5}>
         <Grid size={{ xs: 12, sm: 6 }}>
           <FormTextField
@@ -114,6 +109,25 @@ export function CaseForm({
           />
         </Grid>
 
+        <Grid size={{ xs: 12, sm: 4 }}>
+          <FormSelect
+            name="priorityLevel"
+            control={control}
+            label={t('cases.fields.priority')}
+            options={CASE_PRIORITY_OPTIONS}
+            disabled={fieldsDisabled}
+          />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 8 }}>
+          <FormSelect
+            name="socialResearchStatus"
+            control={control}
+            label={t('cases.fields.socialResearchStatus')}
+            options={SOCIAL_RESEARCH_STATUS_OPTIONS}
+            disabled={fieldsDisabled}
+          />
+        </Grid>
+
         <Grid size={{ xs: 12, sm: 6 }}>
           <FormSelect
             name="governorateId"
@@ -140,7 +154,23 @@ export function CaseForm({
           </Stack>
         </Grid>
 
-        <Grid size={12}>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <Stack spacing={0.5}>
+            <FormSelect
+              name="villageId"
+              control={control}
+              label={t('cases.fields.village')}
+              options={(villages.data ?? []).map((v) => ({ value: v.id, label: v.name }))}
+              disabled={fieldsDisabled || !cityId || villages.loading}
+            />
+            {!cityId ? (
+              <Typography variant="caption" color="text.secondary">
+                {t('cases.selectCityFirst')}
+              </Typography>
+            ) : null}
+          </Stack>
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <FormTextField
             name="addressDetails"
             control={control}

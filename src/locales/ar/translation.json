@@ -74,8 +74,6 @@
     "minValue1": "يجب أن تكون القيمة 1 على الأقل"
   },
   "errors": {
-    "unauthorizedTitle": "غير مصرح لك بالوصول",
-    "unauthorizedDescription": "ليس لديك الصلاحية الكافية لعرض هذه الصفحة.",
     "notFoundTitle": "الصفحة غير موجودة",
     "notFoundDescription": "الصفحة التي تبحث عنها غير موجودة أو تم نقلها.",
     "backToDashboard": "العودة إلى لوحة التحكم"
@@ -85,8 +83,7 @@
     "defaultCancel": "إلغاء"
   },
   "settings": {
-    "lookupsTitle": "القوائم الأساسية",
-    "permissionsTitle": "صلاحيات الأدوار"
+    "lookupsTitle": "القوائم الأساسية"
   },
   "cases": {
     "listTitle": "الحالات",
@@ -94,7 +91,6 @@
     "newCase": "إضافة حالة",
     "editCase": "تعديل الحالة",
     "caseDetails": "بيانات الحالة",
-    "reviewOnlyNotice": "بصفتك مراجع حالات، يمكنك فقط اعتماد أو رفض هذه الحالة دون تعديل بياناتها.",
     "fields": {
       "caseNumber": "رقم الحالة",
       "fullName": "اسم المستفيد",
@@ -112,7 +108,9 @@
       "priority": "الأولوية",
       "createdAt": "تاريخ الإنشاء",
       "createdBy": "أُنشئت بواسطة",
-      "assignedResearcher": "الباحث المسؤول"
+      "assignedResearcher": "الباحث المسؤول",
+      "village": "القرية",
+      "socialResearchStatus": "حالة البحث الاجتماعي"
     },
     "selectGovernorateFirst": "اختر المحافظة أولاً",
     "noCitiesForGovernorate": "لا توجد مدن مسجلة لهذه المحافظة",
@@ -128,7 +126,7 @@
       "backToList": "العودة إلى قائمة الحالات"
     },
     "filters": {
-      "searchPlaceholder": "بحث بالاسم...",
+      "searchPlaceholder": "بحث بالاسم، الرقم القومي، أو رقم الهاتف...",
       "statusFilterLabel": "تصفية حسب الحالة",
       "allStatuses": "كل الحالات"
     },
@@ -144,13 +142,303 @@
       "deleteError": "تعذر حذف الحالة",
       "loadError": "تعذر تحميل بيانات الحالة",
       "saveError": "تعذر حفظ الحالة، يرجى المحاولة مرة أخرى",
-      "notFound": "لم يتم العثور على هذه الحالة"
+      "notFound": "لم يتم العثور على هذه الحالة",
+      "duplicateNationalId": "هذه الحالة مسجلة بالفعل باستخدام نفس الرقم القومي."
     },
     "empty": {
       "title": "لا توجد حالات بعد",
       "description": "ابدأ بإضافة أول حالة مستفيد لعرضها هنا",
       "noResultsTitle": "لا توجد نتائج مطابقة",
       "noResultsDescription": "جرّب تعديل كلمة البحث أو تصفية الحالة"
+    },
+    "selectCityFirst": "اختر المدينة / المركز أولاً",
+    "attachments": {
+      "idCardTitle": "صور البطاقة الشخصية",
+      "supportingDocumentsTitle": "المستندات الداعمة",
+      "uploadFiles": "رفع ملفات",
+      "empty": "لا توجد ملفات مرفوعة بعد",
+      "supportedFormats": "الصور (JPG, PNG)، ومستندات PDF",
+      "preview": "معاينة",
+      "uploadSuccess": "تم رفع الملف بنجاح",
+      "uploadError": "تعذر رفع الملف، حاول مرة أخرى",
+      "deleteSuccess": "تم حذف الملف بنجاح",
+      "deleteError": "تعذر حذف الملف"
+    },
+    "visits": {
+      "title": "زيارات البحث الاجتماعي",
+      "empty": "لا توجد زيارات مسجلة لهذه الحالة بعد"
     }
+  },
+  "visits": {
+    "listTitle": "زيارات البحث الاجتماعي",
+    "listDescription": "إدارة وتسجيل زيارات البحث الاجتماعي ومتابعة التقارير والتوصيات",
+    "newVisit": "إضافة زيارة جديدة",
+    "editVisit": "تعديل الزيارة",
+    "visitDetails": "تفاصيل الزيارة",
+    "selectCase": "اختر الحالة",
+    "selectCasePlaceholder": "ابحث عن حالة بالاسم أو رقم الحالة...",
+    "changeCase": "تغيير الحالة",
+    "noCaseSelected": "لم يتم اختيار حالة بعد",
+    "tabs": {
+      "overview": "نظرة عامة",
+      "report": "التقرير التفصيلي",
+      "attachments": "المرفقات والصور",
+      "history": "سجل التغييرات",
+      "timeline": "الجدول الزمني"
+    },
+    "sections": {
+      "caseInfo": "القسم الأول: بيانات الحالة والمستفيد",
+      "visitInfo": "القسم الثاني: تفاصيل الزيارة والموقع",
+      "visitReport": "القسم الثالث: تقرير البحث الميداني",
+      "recommendation": "القسم الرابع: التوصية والقرار المقترح",
+      "attachments": "القسم الخامس: المرفقات والصور"
+    },
+    "fields": {
+      "visitNumber": "رقم الزيارة",
+      "caseNumber": "رقم الحالة",
+      "beneficiaryName": "اسم المستفيد",
+      "visitDate": "تاريخ الزيارة",
+      "visitType": "نوع الزيارة",
+      "status": "حالة الزيارة",
+      "priority": "أولوية الزيارة",
+      "researcher": "الباحث الاجتماعي",
+      "summary": "ملخص الزيارة",
+      "detailedReport": "التقرير التفصيلي",
+      "livingConditions": "الحالة المعيشية والسكن",
+      "employmentStatus": "الوضع الوظيفي والعمل",
+      "incomeVerification": "التحقق من الدخل والمصادر",
+      "healthStatus": "الحالة الصحية",
+      "childrenStatus": "وضع الأبناء والتعليم",
+      "additionalNotes": "ملاحظات إضافية",
+      "recommendation": "التوصية النهائي",
+      "recommendationReason": "سبب التوصية",
+      "suggestedAssistance": "المساعدة المقترحة",
+      "suggestedAmount": "المبلغ المقترح (ج.م)",
+      "nextVisitDate": "تاريخ الزيارة القادمة (تذكير)",
+      "latitude": "خط العرض (Latitude)",
+      "longitude": "خط الطول (Longitude)",
+      "getGpsLocation": "تحديد الموقع الحالي عبر GPS",
+      "addressDetails": "تفاصيل العنوان"
+    },
+    "statuses": {
+      "scheduled": "مجدولة",
+      "completed": "مكتملة",
+      "cancelled": "ملغاة",
+      "missed": "فائتة"
+    },
+    "types": {
+      "initial_visit": "زيارة أولية",
+      "follow_up": "متابعة",
+      "emergency": "طارئة",
+      "verification": "تحقق",
+      "monthly_review": "مراجعة شهرية",
+      "other": "أخرى"
+    },
+    "recommendations": {
+      "approve": "اعتماد الحالة",
+      "reject": "رفض الحالة",
+      "need_more_documents": "طلب مستندات إضافية",
+      "need_another_visit": "طلب زيارة أخرى",
+      "increase_assistance": "زيادة المساعدة",
+      "reduce_assistance": "تخفيض المساعدة",
+      "suspend_case": "تعليق الحالة",
+      "close_case": "إغلاق الحالة"
+    },
+    "priorities": {
+      "low": "منخفضة",
+      "medium": "متوسطة",
+      "high": "عالية",
+      "urgent": "عاجلة جداً"
+    },
+    "filters": {
+      "searchPlaceholder": "بحث باسم المستفيد، رقم الحالة، الباحث...",
+      "visitType": "نوع الزيارة",
+      "status": "الحالة",
+      "recommendation": "التوصية",
+      "researcher": "الباحث",
+      "dateFrom": "من تاريخ",
+      "dateTo": "إلى تاريخ",
+      "governorate": "المحافظة",
+      "city": "المدينة / القرية",
+      "caseNumber": "رقم الحالة",
+      "beneficiaryName": "اسم المستفيد",
+      "allTypes": "كل أنواع الزيارات",
+      "allStatuses": "كل الحالات",
+      "allRecommendations": "كل التوصيات",
+      "allResearchers": "جميع الباحثين",
+      "resetFilters": "إعادة ضبط الفلاتر",
+      "exportSelected": "تصدير المحدد (CSV)",
+      "exportAll": "تصدير نتائج البحث (CSV)"
+    },
+    "actions": {
+      "create": "حفظ الزيارة",
+      "save": "حفظ التعديلات",
+      "delete": "حذف الزيارة",
+      "viewDetails": "عرض التفاصيل",
+      "uploadFiles": "رفع مرفقات",
+      "download": "تحميل",
+      "preview": "معاينة",
+      "backToList": "العودة إلى قائمة الزيارات"
+    },
+    "attachments": {
+      "title": "مرفقات الزيارة",
+      "dragDrop": "اسحب الملفات هنا أو انقر للاختيار",
+      "supportedFormats": "الصور (JPG, PNG, WEBP)، مستندات PDF، والملفات المكتوبة",
+      "uploadSuccess": "تم رفع المرفق بنجاح",
+      "deleteConfirm": "هل أنت متأكد من حذف هذا المرفق؟",
+      "deleteSuccess": "تم حذف المرفق بنجاح",
+      "empty": "لا توجد مرفقات لهذه الزيارة"
+    },
+    "history": {
+      "title": "سجل تغييرات الزيارة",
+      "events": {
+        "visit_created": "تم إنشاء الزيارة",
+        "report_updated": "تم تحديث التقرير التفصيلي",
+        "recommendation_changed": "تم تغيير التوصية",
+        "attachment_uploaded": "تم رفع مرفق جديد",
+        "attachment_deleted": "تم حذف مرفق",
+        "status_changed": "تم تغيير حالة الزيارة"
+      },
+      "empty": "لا يوجد سجل تغييرات بعد"
+    },
+    "messages": {
+      "createSuccess": "تم تسجيل الزيارة بنجاح",
+      "updateSuccess": "تم حفظ تعديلات الزيارة بنجاح",
+      "deleteConfirmTitle": "حذف الزيارة",
+      "deleteConfirmMessage": "هل أنت متأكد من حذف هذه الزيارة؟ سيتم الحذف بشكل مؤقت (Soft Delete) ويمكن استرجاعها.",
+      "deleteSuccess": "تم حذف الزيارة بنجاح",
+      "deleteError": "تعذر حذف الزيارة",
+      "loadError": "تعذر تحميل بيانات الزيارة",
+      "saveError": "تعذر حفظ الزيارة، يرجى المحاولة مرة أخرى",
+      "notFound": "لم يتم العثور على الزيارة المطلوبة",
+      "gpsSuccess": "تم التقاط موقع GPS بنجاح",
+      "gpsError": "تعذر تحديد الموقع الجغرافي. تأكد من تفعيل خدمة الموقع في المتصفح."
+    },
+    "empty": {
+      "title": "لا توجد زيارات بعد",
+      "description": "قم بإضافة أول زيارة ميدانية لمتابعة الحالات",
+      "noResultsTitle": "لا توجد نتائج مطابقة للفلاتر",
+      "noResultsDescription": "جرّب تعديل البحث أو خيارات التصفية"
+    }
+  },
+  "donors": {
+    "listTitle": "المتبرعون",
+    "listDescription": "إدارة بيانات المتبرعين",
+    "newDonor": "إضافة متبرع",
+    "fields": {
+      "name": "الاسم",
+      "phone": "رقم الهاتف",
+      "email": "البريد الإلكتروني",
+      "notes": "ملاحظات",
+      "createdAt": "تاريخ الإضافة"
+    },
+    "messages": {
+      "createSuccess": "تم إضافة المتبرع بنجاح",
+      "saveError": "تعذر حفظ بيانات المتبرع",
+      "deleteConfirmTitle": "حذف المتبرع",
+      "deleteConfirmMessage": "هل أنت متأكد من حذف هذا المتبرع؟",
+      "deleteSuccess": "تم حذف المتبرع بنجاح",
+      "deleteError": "تعذر حذف المتبرع"
+    },
+    "empty": {
+      "title": "لا يوجد متبرعون بعد",
+      "description": "ابدأ بإضافة أول متبرع"
+    }
+  },
+  "donations": {
+    "listTitle": "التبرعات",
+    "listDescription": "تسجيل ومتابعة التبرعات الواردة",
+    "newDonation": "إضافة تبرع",
+    "fields": {
+      "donorName": "المتبرع",
+      "amount": "المبلغ",
+      "date": "التاريخ",
+      "method": "طريقة الدفع",
+      "notes": "ملاحظات"
+    },
+    "messages": {
+      "createSuccess": "تم تسجيل التبرع بنجاح",
+      "saveError": "تعذر حفظ التبرع",
+      "deleteConfirmTitle": "حذف التبرع",
+      "deleteConfirmMessage": "هل أنت متأكد من حذف هذا التبرع؟",
+      "deleteSuccess": "تم حذف التبرع بنجاح",
+      "deleteError": "تعذر حذف التبرع"
+    },
+    "empty": {
+      "title": "لا توجد تبرعات بعد",
+      "description": "ابدأ بتسجيل أول تبرع"
+    }
+  },
+  "expenses": {
+    "listTitle": "المصروفات",
+    "listDescription": "تسجيل ومتابعة مصروفات الجمعية",
+    "newExpense": "إضافة مصروف",
+    "fields": {
+      "category": "الفئة",
+      "amount": "المبلغ",
+      "date": "التاريخ",
+      "description": "الوصف"
+    },
+    "messages": {
+      "createSuccess": "تم تسجيل المصروف بنجاح",
+      "saveError": "تعذر حفظ المصروف",
+      "deleteConfirmTitle": "حذف المصروف",
+      "deleteConfirmMessage": "هل أنت متأكد من حذف هذا المصروف؟",
+      "deleteSuccess": "تم حذف المصروف بنجاح",
+      "deleteError": "تعذر حذف المصروف"
+    },
+    "empty": {
+      "title": "لا توجد مصروفات بعد",
+      "description": "ابدأ بتسجيل أول مصروف"
+    }
+  },
+  "dashboard": {
+    "stats": {
+      "totalCases": "إجمالي حالات المستفيدين",
+      "newCases": "حالات جديدة هذا الشهر",
+      "totalDonations": "إجمالي التبرعات",
+      "totalExpenses": "إجمالي المصروفات",
+      "currentBalance": "الرصيد الحالي",
+      "assistedThisMonth": "مستفيدون تمت مساعدتهم هذا الشهر"
+    },
+    "quickActions": {
+      "title": "إجراءات سريعة",
+      "addCase": "إضافة مستفيد جديد",
+      "addDonation": "إضافة تبرع",
+      "addExpense": "إضافة مصروف",
+      "addVisit": "إضافة زيارة"
+    },
+    "recentActivity": {
+      "title": "آخر الأنشطة",
+      "empty": "لا توجد أنشطة بعد"
+    },
+    "charts": {
+      "monthlyTrend": "التبرعات مقابل المصروفات (آخر 12 شهرًا)",
+      "casesByStatus": "حالات المستفيدين حسب الحالة",
+      "casesByType": "حالات المستفيدين حسب النوع",
+      "monthlyNewCases": "الحالات الجديدة شهريًا",
+      "noData": "لا توجد بيانات كافية لعرض هذا الرسم البياني بعد"
+    }
+  },
+  "reports": {
+    "description": "تقارير الحالات والتبرعات والمصروفات",
+    "tabs": {
+      "beneficiary": "تقرير المستفيدين",
+      "donorStatement": "كشف حساب المتبرع",
+      "income": "تقرير الإيرادات",
+      "expense": "تقرير المصروفات",
+      "monthly": "التقرير الشهري",
+      "annual": "التقرير السنوي"
+    },
+    "exportExcel": "تصدير Excel",
+    "exportPdf": "تصدير PDF",
+    "allDonors": "كل المتبرعين",
+    "total": "الإجمالي",
+    "income": "الإيرادات",
+    "expense": "المصروفات",
+    "balance": "الرصيد",
+    "month": "الشهر",
+    "selectMonth": "اختر الشهر",
+    "selectYear": "اختر السنة"
   }
 }

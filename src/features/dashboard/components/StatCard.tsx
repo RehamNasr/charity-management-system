@@ -14,9 +14,7 @@ interface StatCardProps {
   color?: 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info';
 }
 
-/** Reusable dashboard metric tile. Business modules will supply real `value`s via Firestore
- * rollup documents (docs/ARCHITECTURE.md §9); for now the shell renders with `loading` so the
- * layout/skeleton state is already correct once wired up. */
+/** Reusable dashboard metric tile — shows a skeleton while `loading`, the real value otherwise. */
 export function StatCard({
   label,
   value,
