@@ -58,14 +58,22 @@ export function MonthlyReportTab() {
     let cancelled = false;
     void (async () => {
       setLoading(true);
-      const [year, monthIndex] = month.split('-').map(Number);
-      const start = new Date(year, monthIndex - 1, 1);
-      const end = new Date(year, monthIndex, 0, 23, 59, 59, 999);
+      try {
+        if (!month) return;
+        const [year, monthIndex] = month.split('-').map(Number);
+        const start = new Date(year, monthIndex - 1, 1);
+        const end = new Date(year, monthIndex, 0, 23, 59, 59, 999);
 
-      const result = await fetchPeriodSummary(start, end);
-      if (!cancelled) {
-        setSummary(result);
-        setLoading(false);
+        const result = await fetchPeriodSummary(start, end);
+        if (!cancelled) {
+          setSummary(result);
+        }
+      } catch (err) {
+        console.error('Error fetching monthly summary:', err);
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
     })();
     return () => {

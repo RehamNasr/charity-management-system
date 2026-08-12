@@ -20,10 +20,18 @@ export function BeneficiaryReportTab() {
   useEffect(() => {
     let cancelled = false;
     void (async () => {
-      const snap = await getDocs(buildCasesQuery({ status: 'all', searchTerm: '' }, 'createdAt', 'desc'));
-      if (!cancelled) {
-        setRows(snap.docs.map((docSnap) => ({ ...docSnap.data(), id: docSnap.id })));
-        setLoading(false);
+      setLoading(true);
+      try {
+        const snap = await getDocs(buildCasesQuery({ status: 'all', searchTerm: '' }, 'createdAt', 'desc'));
+        if (!cancelled) {
+          setRows(snap.docs.map((docSnap) => ({ ...docSnap.data(), id: docSnap.id })));
+        }
+      } catch (err) {
+        console.error('Error fetching beneficiary report:', err);
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
     })();
     return () => {

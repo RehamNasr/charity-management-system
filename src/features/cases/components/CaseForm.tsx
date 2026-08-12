@@ -14,7 +14,12 @@ import {
   useVillagesByCity,
 } from '@hooks/useLookupCollection';
 import { showSnackbar } from '@store/snackbarStore';
-import { CASE_PRIORITY_OPTIONS, SOCIAL_RESEARCH_STATUS_OPTIONS } from '@constants/caseStatus';
+import {
+  CASE_PRIORITY_OPTIONS,
+  SOCIAL_RESEARCH_STATUS_OPTIONS,
+  MARITAL_STATUS_OPTIONS,
+  ASSISTANCE_TYPE_OPTIONS,
+} from '@constants/caseStatus';
 import type { CaseStatus } from '@types-app/case';
 import type { SelectOption } from '@types-app/common';
 
@@ -118,12 +123,31 @@ export function CaseForm({
             disabled={fieldsDisabled}
           />
         </Grid>
-        <Grid size={{ xs: 12, sm: 8 }}>
+        <Grid size={{ xs: 12, sm: 4 }}>
           <FormSelect
             name="socialResearchStatus"
             control={control}
             label={t('cases.fields.socialResearchStatus')}
             options={SOCIAL_RESEARCH_STATUS_OPTIONS}
+            disabled={fieldsDisabled}
+          />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 4 }}>
+          <FormSelect
+            name="maritalStatus"
+            control={control}
+            label="الحالة الاجتماعية"
+            options={MARITAL_STATUS_OPTIONS}
+            disabled={fieldsDisabled}
+          />
+        </Grid>
+
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <FormSelect
+            name="assistanceType"
+            control={control}
+            label="نوع المساعدة"
+            options={ASSISTANCE_TYPE_OPTIONS}
             disabled={fieldsDisabled}
           />
         </Grid>

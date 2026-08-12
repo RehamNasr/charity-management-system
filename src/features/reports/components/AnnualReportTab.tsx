@@ -74,10 +74,18 @@ export function AnnualReportTab() {
     let cancelled = false;
     void (async () => {
       setLoading(true);
-      const result = await fetchAnnualBreakdown(year);
-      if (!cancelled) {
-        setRows(result);
-        setLoading(false);
+      try {
+        if (!year || isNaN(year)) return;
+        const result = await fetchAnnualBreakdown(year);
+        if (!cancelled) {
+          setRows(result);
+        }
+      } catch (err) {
+        console.error('Error fetching annual breakdown:', err);
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
     })();
     return () => {

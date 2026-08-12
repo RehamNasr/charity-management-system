@@ -85,3 +85,41 @@ export const SOCIAL_RESEARCH_STATUS_OPTIONS: SelectOption<SocialResearchStatus>[
     value: status,
     label: SOCIAL_RESEARCH_STATUS_LABELS_AR[status],
   }));
+
+export const MARITAL_STATUS_LABELS_AR: Record<string, string> = {
+  married: 'متزوج / متزوجة',
+  single: 'أعزب / عزباء',
+  widowed: 'أرمل / أرملة',
+  divorced: 'مطلق / مطلقة',
+  other: 'أخرى',
+};
+
+export const MARITAL_STATUS_OPTIONS: SelectOption<string>[] = [
+  { value: 'married', label: 'متزوج / متزوجة' },
+  { value: 'single', label: 'أعزب / عزباء' },
+  { value: 'widowed', label: 'أرمل / أرملة' },
+  { value: 'divorced', label: 'مطلق / مطلقة' },
+  { value: 'other', label: 'أخرى' },
+];
+
+export const ASSISTANCE_TYPE_LABELS_AR: Record<string, string> = {
+  marriage: 'مساعدة زواج',
+  food: 'إطعام (سلة غذائية)',
+  medical: 'علاج ومستلزمات طبية',
+  housing: 'ترميم وتجهيز منازل',
+  monthly_financial: 'مساعدة مالية شهرية',
+  orphan_sponsorship: 'كفالة أيتام',
+  education_clothing: 'ملابس ومستلزمات دراسية',
+  other: 'أخرى',
+};
+
+export const ASSISTANCE_TYPE_OPTIONS: SelectOption<string>[] = [
+  { value: 'marriage', label: 'مساعدة زواج' },
+  { value: 'food', label: 'إطعام (سلة غذائية)' },
+  { value: 'medical', label: 'علاج ومستلزمات طبية' },
+  { value: 'housing', label: 'ترميم وتجهيز منازل' },
+  { value: 'monthly_financial', label: 'مساعدة مالية شهرية' },
+  { value: 'orphan_sponsorship', label: 'كفالة أيتام' },
+  { value: 'education_clothing', label: 'ملابس ومستلزمات دراسية' },
+  { value: 'other', label: 'أخرى' },
+];

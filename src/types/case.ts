@@ -22,6 +22,21 @@ export type CasePriority = (typeof CASE_PRIORITIES)[number];
 export const SOCIAL_RESEARCH_STATUSES = ['not_started', 'in_progress', 'completed'] as const;
 export type SocialResearchStatus = (typeof SOCIAL_RESEARCH_STATUSES)[number];
 
+export const MARITAL_STATUSES = ['married', 'single', 'widowed', 'divorced', 'other'] as const;
+export type MaritalStatus = (typeof MARITAL_STATUSES)[number];
+
+export const ASSISTANCE_TYPES = [
+  'marriage',
+  'food',
+  'medical',
+  'housing',
+  'monthly_financial',
+  'orphan_sponsorship',
+  'education_clothing',
+  'other',
+] as const;
+export type AssistanceType = (typeof ASSISTANCE_TYPES)[number];
+
 export interface CaseAddress {
   governorateId: string;
   /** Denormalized at write-time so list/detail views don't need a lookup join to render an
@@ -56,6 +71,8 @@ export interface Case {
   priorityLevel: CasePriority;
   status: CaseStatus;
   socialResearchStatus: SocialResearchStatus;
+  maritalStatus?: MaritalStatus;
+  assistanceType?: AssistanceType;
   assignedResearcherId: string | null;
   assignedResearcherName: string | null;
   assignedReviewerId: string | null;

@@ -23,16 +23,13 @@ export const visitSchema = z
     governorateId: z.string().optional(),
     cityId: z.string().optional(),
 
-    // Report
-    summary: z
-      .string()
-      .min(5, 'validation.minLength3')
-      .max(2000, 'validation.maxLength2000'),
-    livingConditions: z.string().min(1, 'validation.required'),
-    employmentStatus: z.string().min(1, 'validation.required'),
-    incomeVerification: z.string().min(1, 'validation.required'),
-    healthStatus: z.string().min(1, 'validation.required'),
-    childrenStatus: z.string().min(1, 'validation.required'),
+    // Report (Section 3 - Optional)
+    summary: z.string().max(2000, 'validation.maxLength2000').optional(),
+    livingConditions: z.string().optional(),
+    employmentStatus: z.string().optional(),
+    incomeVerification: z.string().optional(),
+    healthStatus: z.string().optional(),
+    childrenStatus: z.string().optional(),
     additionalNotes: z.string().optional(),
 
     // Recommendation

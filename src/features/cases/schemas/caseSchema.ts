@@ -26,6 +26,8 @@ export const caseFormSchema = z.object({
   priorityLevel: z.enum(CASE_PRIORITIES, 'validation.required'),
   status: z.enum(CASE_STATUSES, 'validation.required'),
   socialResearchStatus: z.enum(SOCIAL_RESEARCH_STATUSES, 'validation.required'),
+  maritalStatus: z.string().optional(),
+  assistanceType: z.string().optional(),
   notes: z.string().max(2000, 'validation.maxLength2000').optional(),
 });
 

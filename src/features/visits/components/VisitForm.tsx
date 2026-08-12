@@ -471,11 +471,16 @@ export function VisitForm({
           </Grid>
         </Paper>
 
-        {/* SECTION 3: VISIT REPORT */}
+        {/* SECTION 3: VISIT REPORT (OPTIONAL) */}
         <Paper variant="outlined" sx={{ p: 3, borderRadius: 2 }}>
-          <Typography variant="h6" color="primary" gutterBottom sx={{ fontWeight: 'bold' }}>
-            {t('visits.sections.visitReport')}
-          </Typography>
+          <Stack direction="row" alignItems="center" spacing={1} mb={0.5}>
+            <Typography variant="h6" color="primary" sx={{ fontWeight: 'bold' }}>
+              {t('visits.sections.visitReport')}
+            </Typography>
+            <Typography variant="caption" color="text.secondary" sx={{ bgcolor: 'action.selected', px: 1, py: 0.2, borderRadius: 1 }}>
+              (اختياري)
+            </Typography>
+          </Stack>
           <Divider sx={{ mb: 3 }} />
 
           <Grid container spacing={3}>
@@ -488,7 +493,6 @@ export function VisitForm({
                     {...field}
                     label={t('visits.fields.summary')}
                     fullWidth
-                    required
                     multiline
                     rows={3}
                     error={Boolean(errors.summary)}
@@ -507,7 +511,6 @@ export function VisitForm({
                     {...field}
                     label={t('visits.fields.livingConditions')}
                     fullWidth
-                    required
                     multiline
                     rows={3}
                     error={Boolean(errors.livingConditions)}
@@ -526,7 +529,6 @@ export function VisitForm({
                     {...field}
                     label={t('visits.fields.employmentStatus')}
                     fullWidth
-                    required
                     multiline
                     rows={3}
                     error={Boolean(errors.employmentStatus)}
@@ -545,7 +547,6 @@ export function VisitForm({
                     {...field}
                     label={t('visits.fields.incomeVerification')}
                     fullWidth
-                    required
                     multiline
                     rows={3}
                     error={Boolean(errors.incomeVerification)}
@@ -564,7 +565,6 @@ export function VisitForm({
                     {...field}
                     label={t('visits.fields.healthStatus')}
                     fullWidth
-                    required
                     multiline
                     rows={3}
                     error={Boolean(errors.healthStatus)}
@@ -583,7 +583,6 @@ export function VisitForm({
                     {...field}
                     label={t('visits.fields.childrenStatus')}
                     fullWidth
-                    required
                     multiline
                     rows={3}
                     error={Boolean(errors.childrenStatus)}

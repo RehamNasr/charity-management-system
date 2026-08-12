@@ -33,12 +33,23 @@ export function IncomeReportTab() {
     let cancelled = false;
     void (async () => {
       setLoading(true);
-      const end = new Date(dateTo);
-      end.setHours(23, 59, 59, 999);
-      const snap = await getDocs(buildDonationsInRangeQuery(new Date(dateFrom), end));
-      if (!cancelled) {
-        setRows(snap.docs.map((docSnap) => ({ ...docSnap.data(), id: docSnap.id })));
-        setLoading(false);
+      try {
+        if (!dateFrom || !dateTo) {
+          setRows([]);
+          return;
+        }
+        const end = new Date(dateTo);
+        end.setHours(23, 59, 59, 999);
+        const snap = await getDocs(buildDonationsInRangeQuery(new Date(dateFrom), end));
+        if (!cancelled) {
+          setRows(snap.docs.map((docSnap) => ({ ...docSnap.data(), id: docSnap.id })));
+        }
+      } catch (err) {
+        console.error('Error fetching income report:', err);
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
     })();
     return () => {
