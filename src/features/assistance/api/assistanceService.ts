@@ -44,38 +44,36 @@ export async function recordAssistance(
   notes: string,
   currentUser: CurrentUserInfo,
 ): Promise<string> {
-  const newAssistanceRef = doc(collectionRef<AssistanceRecord>(ASSISTANCE_COLLECTION));
-  const caseDocRef = docRef<Case>(CASES_COLLECTION, targetCase.id);
   const assistanceTimestamp = Timestamp.fromDate(date);
 
-  await runTransaction(db, async (transaction) => {
-    const caseSnap = await transaction.get(caseDocRef);
-    const currentCaseData = caseSnap.exists() ? caseSnap.data() : null;
-    const currentTotal = currentCaseData?.totalAssistanceReceived ?? 0;
+  const recordData = {
+    caseId: targetCase.id,
+    caseNumber: targetCase.caseNumber ?? '',
+    beneficiaryName: targetCase.fullName ?? '',
+    assistanceType: assistanceType ?? 'food',
+    amount: amount,
+    date: assistanceTimestamp,
+    notes: notes.trim(),
+    isDeleted: false,
+    createdBy: currentUser.uid ?? '',
+    createdAt: serverTimestamp(),
+  };
 
-    const recordData: Omit<AssistanceRecord, 'id'> = {
-      caseId: targetCase.id,
-      caseNumber: targetCase.caseNumber,
-      beneficiaryName: targetCase.fullName,
-      assistanceType,
-      amount,
-      date: assistanceTimestamp,
-      notes: notes.trim(),
-      isDeleted: false,
-      createdBy: currentUser.uid,
-      createdAt: serverTimestamp() as unknown as Timestamp,
-    };
+  const docRefResult = await addDoc(
+    collectionRef<AssistanceRecord>(ASSISTANCE_COLLECTION),
+    recordData as unknown as WithFieldValue<AssistanceRecord>,
+  );
 
-    transaction.set(newAssistanceRef, recordData);
+  const caseDocRef = docRef<Case>(CASES_COLLECTION, targetCase.id);
+  const currentTotal = targetCase.totalAssistanceReceived ?? 0;
 
-    transaction.update(caseDocRef, {
-      totalAssistanceReceived: currentTotal + amount,
-      lastAssistanceDate: assistanceTimestamp,
-      status: 'receiving_assistance',
-      updatedBy: currentUser.uid,
-      updatedAt: serverTimestamp(),
-    });
+  await updateDoc(caseDocRef, {
+    totalAssistanceReceived: currentTotal + amount,
+    lastAssistanceDate: assistanceTimestamp,
+    status: 'receiving_assistance',
+    updatedBy: currentUser.uid ?? '',
+    updatedAt: serverTimestamp(),
   });
 
-  return newAssistanceRef.id;
+  return docRefResult.id;
 }

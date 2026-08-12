@@ -98,6 +98,12 @@ service cloud.firestore {
       allow update: if isSignedIn();
       allow delete: if false;
     }
+    match /assistance/{assistanceId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && request.resource.data.isDeleted == false;
+      allow update: if isSignedIn();
+      allow delete: if false;
+    }
 
     // Default deny for every other collection until its module is implemented.
     match /{document=**} {

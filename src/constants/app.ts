@@ -1,5 +1,5 @@
 export const APP_NAME =
-  (import.meta.env['VITE_APP_NAME'] as string | undefined) ?? 'نظام إدارة الجمعية الخيرية';
+  (import.meta.env['VITE_APP_NAME'] as string | undefined) ?? 'جمعية حكاية خير';
 
 export const STORAGE_KEYS = {
   themeMode: 'cms:theme-mode',
