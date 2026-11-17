@@ -138,7 +138,9 @@ export async function createVisit(
 
     transaction.set(counterRef, { year: currentYear, seq: nextSeq });
 
-    const nextVisitDate = values.nextVisitDate ? Timestamp.fromDate(new Date(values.nextVisitDate)) : null;
+    const nextVisitDate = values.nextVisitDate
+      ? Timestamp.fromDate(new Date(values.nextVisitDate))
+      : null;
     const visitDate = Timestamp.fromDate(new Date(values.visitDate));
 
     const newVisitData: WithFieldValue<Omit<Visit, 'id'>> = {
@@ -150,13 +152,13 @@ export async function createVisit(
       visitType: values.visitType,
       status: values.status,
       priority: values.priority,
-      summary: values.summary.trim(),
+      summary: values.summary?.trim() ?? '',
       fullReport: {
-        livingConditions: values.livingConditions.trim(),
-        employmentStatus: values.employmentStatus.trim(),
-        incomeVerification: values.incomeVerification.trim(),
-        healthStatus: values.healthStatus.trim(),
-        childrenStatus: values.childrenStatus.trim(),
+        livingConditions: values.livingConditions?.trim() ?? '',
+        employmentStatus: values.employmentStatus?.trim() ?? '',
+        incomeVerification: values.incomeVerification?.trim() ?? '',
+        healthStatus: values.healthStatus?.trim() ?? '',
+        childrenStatus: values.childrenStatus?.trim() ?? '',
         additionalNotes: values.additionalNotes?.trim() ?? '',
       },
       recommendation: values.recommendation,
@@ -177,7 +179,9 @@ export async function createVisit(
       familyMembersCount: selectedCase.familyMembersCount,
       normalizedBeneficiaryName: normalizeSearchValue(selectedCase.fullName),
       normalizedCaseNumber: normalizeSearchValue(selectedCase.caseNumber),
-      normalizedResearcherName: normalizeSearchValue(values.researcherName || currentUser.displayName),
+      normalizedResearcherName: normalizeSearchValue(
+        values.researcherName || currentUser.displayName,
+      ),
       isDeleted: false,
       deletedAt: null,
       deletedBy: null,
@@ -207,7 +211,9 @@ export async function updateVisit(
   currentUser: CurrentUserInfo,
 ): Promise<void> {
   const visitRef = getVisitRef(visitId);
-  const nextVisitDate = values.nextVisitDate ? Timestamp.fromDate(new Date(values.nextVisitDate)) : null;
+  const nextVisitDate = values.nextVisitDate
+    ? Timestamp.fromDate(new Date(values.nextVisitDate))
+    : null;
   const visitDate = Timestamp.fromDate(new Date(values.visitDate));
 
   await updateDoc(visitRef, {
@@ -217,13 +223,13 @@ export async function updateVisit(
     priority: values.priority,
     researcherId: values.researcherId,
     researcherName: values.researcherName,
-    summary: values.summary.trim(),
+    summary: values.summary?.trim() ?? '',
     fullReport: {
-      livingConditions: values.livingConditions.trim(),
-      employmentStatus: values.employmentStatus.trim(),
-      incomeVerification: values.incomeVerification.trim(),
-      healthStatus: values.healthStatus.trim(),
-      childrenStatus: values.childrenStatus.trim(),
+      livingConditions: values.livingConditions?.trim() ?? '',
+      employmentStatus: values.employmentStatus?.trim() ?? '',
+      incomeVerification: values.incomeVerification?.trim() ?? '',
+      healthStatus: values.healthStatus?.trim() ?? '',
+      childrenStatus: values.childrenStatus?.trim() ?? '',
       additionalNotes: values.additionalNotes?.trim() ?? '',
     },
     recommendation: values.recommendation,
@@ -271,7 +277,10 @@ export async function updateVisit(
   );
 }
 
-export async function softDeleteVisit(visitId: string, currentUser: CurrentUserInfo): Promise<void> {
+export async function softDeleteVisit(
+  visitId: string,
+  currentUser: CurrentUserInfo,
+): Promise<void> {
   await updateDoc(getVisitRef(visitId), {
     isDeleted: true,
     deletedAt: serverTimestamp(),
@@ -291,7 +300,9 @@ export async function uploadVisitAttachment(
     `caseVisits/${visitId}/attachments`,
   );
 
-  const attachmentsRef = collectionRef<VisitAttachment>(`${VISITS_COLLECTION}/${visitId}/attachments`);
+  const attachmentsRef = collectionRef<VisitAttachment>(
+    `${VISITS_COLLECTION}/${visitId}/attachments`,
+  );
   const newAttachment: WithFieldValue<Omit<VisitAttachment, 'id'>> = {
     visitId,
     fileName: file.name,
@@ -302,7 +313,10 @@ export async function uploadVisitAttachment(
     createdAt: serverTimestamp() as unknown as Timestamp,
     createdBy: currentUser.uid,
   };
-  const attachmentDoc = await addDoc(attachmentsRef, newAttachment as WithFieldValue<VisitAttachment>);
+  const attachmentDoc = await addDoc(
+    attachmentsRef,
+    newAttachment as WithFieldValue<VisitAttachment>,
+  );
 
   await logVisitHistoryEvent(
     visitId,
@@ -328,7 +342,10 @@ export async function deleteVisitAttachment(
   fileName: string,
   currentUser: CurrentUserInfo,
 ): Promise<void> {
-  const attachmentDocRef = docRef<VisitAttachment>(`${VISITS_COLLECTION}/${visitId}/attachments`, attachmentId);
+  const attachmentDocRef = docRef<VisitAttachment>(
+    `${VISITS_COLLECTION}/${visitId}/attachments`,
+    attachmentId,
+  );
   await updateDoc(attachmentDocRef, {
     isDeleted: true,
   } as unknown as Record<string, unknown>);

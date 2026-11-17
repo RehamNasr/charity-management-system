@@ -143,17 +143,22 @@ export function AssistancePage() {
     {
       field: 'maritalStatus',
       headerName: 'الحالة الاجتماعية',
-      valueGetter: (r) => (r.maritalStatus ? MARITAL_STATUS_LABELS_AR[r.maritalStatus] ?? r.maritalStatus : '—'),
+      valueGetter: (r) =>
+        r.maritalStatus ? (MARITAL_STATUS_LABELS_AR[r.maritalStatus] ?? r.maritalStatus) : '—',
     },
     {
       field: 'assistanceType',
       headerName: 'نوع المساعدة',
-      valueGetter: (r) => (r.assistanceType ? ASSISTANCE_TYPE_LABELS_AR[r.assistanceType] ?? r.assistanceType : 'إطعام'),
+      valueGetter: (r) =>
+        r.assistanceType
+          ? (ASSISTANCE_TYPE_LABELS_AR[r.assistanceType] ?? r.assistanceType)
+          : 'إطعام',
     },
     {
       field: 'lastAssistanceDate',
       headerName: 'آخر تاريخ مساعدة',
-      valueGetter: (r) => (r.lastAssistanceDate?.toDate ? formatDate(r.lastAssistanceDate.toDate()) : 'لم تستلم بعد'),
+      valueGetter: (r) =>
+        r.lastAssistanceDate?.toDate ? formatDate(r.lastAssistanceDate.toDate()) : 'لم تستلم بعد',
     },
     {
       field: 'totalAssistanceReceived',
@@ -186,7 +191,7 @@ export function AssistancePage() {
       <PageHeader
         title={t('nav.assistance')}
         description="إدارة ومتابعة تقديم المساعدات للمستفيدين المسجلين"
-        action={
+        actions={
           <Button
             variant="contained"
             startIcon={<AddCircleOutlineIcon />}
@@ -267,23 +272,11 @@ export function AssistancePage() {
       </Stack>
 
       {/* Beneficiaries / Assistance Table */}
-      <DataTable
-        columns={columns}
-        rows={filteredCases}
-        getRowId={(r) => r.id}
-        loading={loading}
-      />
+      <DataTable columns={columns} rows={filteredCases} getRowId={(r) => r.id} loading={loading} />
 
       {/* Record Assistance Modal */}
-      <Dialog
-        open={dialogOpen}
-        onClose={() => setDialogOpen(false)}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>
-          تسجيل مساعدة للمستفيد
-        </DialogTitle>
+      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>تسجيل مساعدة للمستفيد</DialogTitle>
         <DialogContent dividers>
           <Stack spacing={2.5} pt={1}>
             <TextField

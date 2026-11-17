@@ -1,13 +1,12 @@
 import {
   addDoc,
-  doc,
-  runTransaction,
+  updateDoc,
   serverTimestamp,
   Timestamp,
   type Query,
+  type WithFieldValue,
 } from 'firebase/firestore';
-import { db } from '@firebase-app/config';
-import { collectionRef, docRef, where, withSoftDeleteFilter } from '@firebase-app/firestore';
+import { collectionRef, docRef, withSoftDeleteFilter } from '@firebase-app/firestore';
 import type { Case } from '@types-app/case';
 
 const ASSISTANCE_COLLECTION = 'assistance';
